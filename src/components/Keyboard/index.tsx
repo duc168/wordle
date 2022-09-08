@@ -1,0 +1,31 @@
+import constants from "@/constants";
+import React from "react";
+import styled from "styled-components";
+import Key from "./Key";
+
+const K = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+  width: 100%;
+`;
+const R = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto ${constants.KEY_GAP};
+`;
+const Keyboard: React.FC<any> = () => {
+  return (
+    <K>
+      {constants.KEYBOARDS.map((row, idx) => (
+        <R key={idx}>
+          {row.map((k, idx) => (
+            <Key key={idx} letter={k} />
+          ))}
+        </R>
+      ))}
+    </K>
+  );
+};
+
+export default Keyboard;
