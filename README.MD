@@ -8,7 +8,7 @@
 ## Todo: 
 1. Write Readme
 2. Write test case (unit test)
-3. Refactor to make code easier to orgarnize and maintain
+3. Refactor to make code easier to organize and maintain
 4. Add toast
 5. Save data to local storage
 6. show "how to play" window on first
@@ -16,3 +16,6 @@
 8. show notification on failed (try again or close)
 9. apply eslint
 10. after 10 minutes, generate new word (from the list of words in json file from aws)
+11. add ci/cd (optional)
+12. try deploy it to GCP (optional)
+13. Apply font (optional)
