@@ -17,7 +17,7 @@ const Tiles: React.FC<any> = () => {
   return (
     <Container>
       {database.map((table) => {
-        return <Row key={table.id} data={table.data} />;
+        return <Row key={table.id} table={table} />;
       })}
     </Container>
   );

@@ -22,6 +22,7 @@ export const createNewTable = (numberOfRecord: number, defaultRecordData: ILette
     }));
     return {
         id: v4(),
+        submitted: false,
         data,
     }
 }

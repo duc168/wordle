@@ -2,6 +2,7 @@ import configs from "@/configs";
 import constants from "@/constants";
 import helpers from "@/helpers";
 import { IDatabase } from "@/interfaces";
+import services from "@/services";
 import React, {
   createContext,
   useCallback,
@@ -13,7 +14,14 @@ import React, {
 import { useRef } from "react";
 
 const useWordle = () => {
+  const [completed, setCompleted] = useState(false);
+
+  const [processing, setProcessing] = useState(false);
   const [database, setDatabase] = useState<IDatabase>(
+    constants.DEFAULT_DATABASE
+  );
+
+  const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>(
     constants.DEFAULT_DATABASE
   );
 
@@ -21,13 +29,27 @@ const useWordle = () => {
 
   const [currentPosition, setCurrentPosition] = useState(0);
 
+  const completedRef = useRef<boolean>(false);
+
+  const processingRef = useRef<boolean>(false);
+
   const databaseRef = useRef<IDatabase>(constants.DEFAULT_DATABASE);
+
+  const keyboardDatabaseRef = useRef<IDatabase>(constants.DEFAULT_DATABASE);
 
   const currentAttemptRef = useRef<number>(0);
 
   const currentPositionRef = useRef<number>(0);
 
   const checkAdd = () => {
+    if (completedRef.current === true) {
+      console.info("Completed!");
+      return false;
+    }
+    if (processingRef.current === true) {
+      console.error("Is processing, please wait");
+      return false;
+    }
     const attempt = currentAttemptRef.current;
     if (attempt >= configs.tryTimes) {
       console.error("Exceed maximum attempt", attempt);
@@ -42,6 +64,14 @@ const useWordle = () => {
   };
 
   const checkRemove = () => {
+    if (completedRef.current === true) {
+      console.info("Completed!");
+      return false;
+    }
+    if (processingRef.current === true) {
+      console.error("Is processing, please wait");
+      return false;
+    }
     const attempt = currentAttemptRef.current;
     if (attempt >= configs.tryTimes) {
       console.error("Exceed maximum attempt", currentAttemptRef.current);
@@ -50,6 +80,23 @@ const useWordle = () => {
     const position = currentPositionRef.current - 1;
     if (position < 0) {
       console.error("No character to remove", position + 1);
+      return false;
+    }
+    return true;
+  };
+
+  const checkCompare = () => {
+    if (completedRef.current === true) {
+      console.info("Completed!");
+      return false;
+    }
+    if (processingRef.current === true) {
+      console.error("Is processing, please wait");
+      return false;
+    }
+    const attempt = currentAttemptRef.current;
+    if (attempt >= configs.tryTimes) {
+      console.error("Exceed maximum attempt", currentAttemptRef.current);
       return false;
     }
     return true;
@@ -85,9 +132,72 @@ const useWordle = () => {
     setDatabase(clonedDatabase);
   };
 
+  const compare = () => {
+    const check = checkCompare();
+    if (!check) return;
+    setProcessing(true);
+    const db = databaseRef.current;
+    const attempt = currentAttemptRef.current;
+    const currentWord = db[attempt].data.map((d) => d.letter).join("");
+    const result = services.compareWord(currentWord);
+    if (result.length > 0) {
+      const clonedDatabase = helpers.clone(db);
+      const table = clonedDatabase[attempt];
+      const newTable = table.data.map((item, idx) => ({
+        ...item,
+        type: result[idx],
+      }));
+      clonedDatabase[attempt].data = newTable;
+      clonedDatabase[attempt].submitted = true;
+
+      setDatabase(clonedDatabase);
+      setTimeout(() => {
+        setProcessing(false);
+        syncDatabase();
+        if (
+          result.filter((item) => item === "correct").length === result.length
+        ) {
+          console.info("Congratulation!");
+          setCompleted(true);
+          return;
+        }
+        const nextAttempt = attempt + 1;
+        setCurrentAttempt(nextAttempt);
+        setCurrentPosition(0);
+      }, constants.COMPARE_SECONDS * 1000);
+      // after processing turn to false, check if there is any attempt left, if yes, add one
+    } else {
+      setProcessing(false);
+    }
+  };
+
+  const fetchData = () => {
+    setProcessing(true);
+    services.getRandomWord().then((result) => {
+      console.log("Get Random Word", result);
+      setProcessing(false);
+    });
+  };
+
+  const syncDatabase = () => {
+    setKeyboardDatabase(databaseRef.current);
+  };
+
+  useEffect(() => {
+    completedRef.current = completed;
+  }, [completed]);
+
+  useEffect(() => {
+    processingRef.current = processing;
+  }, [processing]);
+
   useEffect(() => {
     databaseRef.current = database;
   }, [database]);
+
+  useEffect(() => {
+    keyboardDatabaseRef.current = keyboardDatabase;
+  }, [keyboardDatabase]);
 
   useEffect(() => {
     currentAttemptRef.current = currentAttempt;
@@ -97,10 +207,22 @@ const useWordle = () => {
     currentPositionRef.current = currentPosition;
   }, [currentPosition]);
 
+  // initialize
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return {
+    processing,
+    currentTableId: database[currentAttempt]?.id,
+    currentTable: database[currentAttempt],
+    currentAttempt,
     database,
+    keyboardDatabase,
+    completed,
     addLetter,
     removeLetter,
+    compare,
   };
 };
 

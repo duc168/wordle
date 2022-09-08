@@ -1,24 +1,44 @@
 import React from "react";
 import styled from "styled-components";
 import Letter from "./Letter";
-import { ILetter } from "@/interfaces";
+import { ITable } from "@/interfaces";
+import { motion } from "framer-motion";
+import { useWordleContext } from "@/contexts/wordleContext";
 
 interface Props {
-  data: ILetter[];
+  table: ITable;
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   display: flex;
   column-gap: 5px;
   padding-block: 2.5px;
 `;
 
-const Row: React.FC<Props> = ({ data }) => {
+const Row: React.FC<Props> = ({ table }) => {
   return (
-    <Container>
-      {data.map((record, idx) => (
-        <Letter key={idx} letter={record.letter} type={record.type} />
-      ))}
+    <Container initial={false}>
+      {table.data.map((record, idx) => {
+        if (table.submitted) {
+          return (
+            <Letter
+              key={idx}
+              idx={idx}
+              letter={record.letter.toUpperCase()}
+              type={record.type}
+              submitted
+            />
+          );
+        }
+        return (
+          <Letter
+            key={idx}
+            idx={idx}
+            letter={record.letter.toUpperCase()}
+            type={record.type}
+          />
+        );
+      })}
     </Container>
   );
 };

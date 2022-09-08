@@ -1,11 +1,16 @@
+import configs from "@/configs";
 import constants from "@/constants";
+import { useWordleContext } from "@/contexts/wordleContext";
 import { LetterType } from "@/interfaces";
+import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
 
 interface Props {
   letter: string;
   type: LetterType;
+  idx: number;
+  submitted?: boolean;
 }
 
 const colorHandler = (type: LetterType) => {
@@ -20,15 +25,16 @@ const backgroundColorHandler = (status: LetterType) => {
   return "transparent";
 };
 
-const L = styled.div<{ type: LetterType; letter: string }>`
-  border: 2px solid
-    ${(props) => (props.letter.length > 0 ? "#878a8c" : "#d3d6da")};
+const borderHandler = (letter: string) => {
+  return letter.length > 0 ? "#878a8c" : "#d3d6da";
+};
+
+const L = styled(motion.div)<{ type: LetterType; letter: string }>`
+  border: 2px solid ${(props) => borderHandler(props.letter)};
   width: ${constants.LETTER_WIDTH};
   line-height: 2rem;
   user-select: none;
   height: ${constants.LETTER_HEIGHT};
-  color: ${(props) => colorHandler(props.type)};
-  background-color: ${(props) => backgroundColorHandler(props.type)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,10 +42,64 @@ const L = styled.div<{ type: LetterType; letter: string }>`
   line-height: 2rem;
   font-weight: bold;
   user-select: none;
+  scale: 1;
 `;
-const Letter: React.FC<Props> = ({ letter, type }) => {
+
+const L2 = styled(L)`
+  /* opacity: 0; */
+  transform: rotateX(-90deg);
+  transition: ${constants.COMPARE_SECONDS / 2}s;
+`;
+
+const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
+  if (submitted) {
+    return (
+      <L2
+        type={type}
+        letter={letter}
+        initial={false}
+        animate={{
+          opacity: [1, 0.9, 1],
+          rotateX: [0, 90, 0],
+          color: ["black", "black", colorHandler(type)],
+          backgroundColor: [
+            "transparent",
+            "transparent",
+            backgroundColorHandler(type),
+          ],
+          borderColor: ["none", "none", borderHandler(letter)],
+          scale: 1,
+        }}
+        transition={{
+          duration: constants.COMPARE_SECONDS / 2,
+          delay:
+            (idx + 1) *
+            (constants.COMPARE_SECONDS / 2 / configs.characterPerWord),
+        }}
+      >
+        {letter}
+      </L2>
+    );
+  }
   return (
-    <L type={type} letter={letter}>
+    <L
+      type={type}
+      letter={letter}
+      initial={false}
+      animate={{
+        color: colorHandler(type),
+        backgroundColor: backgroundColorHandler(type),
+        borderColor: borderHandler(letter),
+        scale: letter === "" ? 1 : [1.25, 1],
+      }}
+      transition={{
+        duration: type === "typing" ? 0.1 : constants.COMPARE_SECONDS,
+      }}
+      exit={{
+        opacity: 0,
+        rotateX: 90,
+      }}
+    >
       {letter}
     </L>
   );

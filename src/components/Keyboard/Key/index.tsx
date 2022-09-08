@@ -1,14 +1,17 @@
 import constants from "@/constants";
 import keyCodes from "@/constants/keycodes";
 import { useWordleContext } from "@/contexts/wordleContext";
-import React, { useCallback, useEffect } from "react";
+import { IDatabase, ITable } from "@/interfaces";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import BackspaceSvg from "./BackspaceSvg";
 interface Props {
   letter: string;
 }
 
-const K = styled.button`
+type KeyType = "included" | "not-include" | "not-selected-yet";
+
+const K = styled.button<{ keyType: KeyType }>`
   font-family: inherit;
   font-weight: bold;
   border: 0;
@@ -23,8 +26,8 @@ const K = styled.button`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: #d3d6da;
-  color: #000000;
+  background-color: ${(props) => backgroundColorHandler(props.keyType)};
+  color: ${(props) => colorHandler(props.keyType)};
   flex: 1;
   display: flex;
   justify-content: center;
@@ -33,18 +36,55 @@ const K = styled.button`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
 `;
 
+const getKeyType = (currentDatabase: IDatabase, letter: string): KeyType => {
+  const submittedTables: ITable[] = currentDatabase.filter(
+    (table) => table.submitted === true
+  );
+  if (submittedTables.length === 0) return "not-selected-yet";
+  const currentTableData = submittedTables
+    .map((table) => table.data)
+    .reduce((pre, cur, idx) => {
+      return [...pre, ...cur];
+    });
+  const alreadyTypeLetter = currentTableData.filter(
+    (item) => item.letter === letter
+  );
+  if (alreadyTypeLetter.length > 0) {
+    const isIncluded =
+      alreadyTypeLetter.filter(
+        (item) => item.type === "correct" || item.type === "wrong-spot"
+      ).length > 0;
+    if (isIncluded === true) return "included";
+    return "not-include";
+  } else {
+    return "not-selected-yet";
+  }
+};
+
+const backgroundColorHandler = (type: KeyType) => {
+  if (type === "included") return "#6aaa64";
+  if (type === "not-include") return "#787c7e";
+  return "#d3d6da";
+};
+
+const colorHandler = (type: KeyType) => {
+  if (type === "included") return "#ffffff";
+  if (type === "not-include") return "#ffffff";
+  return "#000000";
+};
+
 const KEY_CODES = keyCodes;
 const Key: React.FC<Props> = ({ letter }) => {
-  const { addLetter, removeLetter } = useWordleContext();
+  const { addLetter, removeLetter, compare, keyboardDatabase } =
+    useWordleContext();
+  const keyType = getKeyType(keyboardDatabase, letter);
   const keyInteractHandler = (inputLetter: string) => {
-    console.log("Click " + inputLetter);
     if (inputLetter === "backspace") {
-      console.log("Backspace");
       removeLetter();
       return;
     }
     if (inputLetter === "enter") {
-      console.log("Enter");
+      compare();
       return;
     }
     addLetter(inputLetter);
@@ -63,12 +103,16 @@ const Key: React.FC<Props> = ({ letter }) => {
   }, [letter]);
   if (letter === "backspace") {
     return (
-      <K onClick={() => keyInteractHandler(letter)}>
+      <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
         <BackspaceSvg />
       </K>
     );
   }
-  return <K onClick={() => keyInteractHandler(letter)}>{letter}</K>;
+  return (
+    <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
+      {letter}
+    </K>
+  );
 };
 
 export default Key;

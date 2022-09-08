@@ -25,6 +25,8 @@ const DEFAULT_TABLE = helpers.createNewTable(configs.characterPerWord, DEFAULT_R
 
 const DEFAULT_DATABASE = helpers.createNewDatabase(configs.tryTimes, DEFAULT_TABLE);
 
+const COMPARE_SECONDS = 4;
+
 export default {
     TITLE_HEIGHT,
 
@@ -35,5 +37,7 @@ export default {
     LETTER_WIDTH,
     KEYBOARDS,
 
-    DEFAULT_DATABASE
+    DEFAULT_DATABASE,
+
+    COMPARE_SECONDS
 }

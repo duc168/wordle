@@ -8,6 +8,7 @@ export interface ILetter {
 
 export interface ITable {
     id: string;
+    submitted: boolean;
     data: ILetter[];
 };
 

@@ -1,4 +1,5 @@
 import configs from "@/configs";
+import { LetterType } from "@/interfaces";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 class Service {
@@ -33,8 +34,33 @@ class Service {
         }
     }
 
-    public compareWord() {
-        console.log("Compare Word");
+    public compareWord(inputWord: string): LetterType[] {
+        if (inputWord.length < configs.characterPerWord) {
+            const errorMessage = 'Not enough letter';
+            console.error(errorMessage);
+            return [];
+        }
+        if (!this.words.includes(inputWord)) {
+            const errorMessage = 'Not in the word list';
+            console.error(errorMessage);
+            return [];
+        }
+        const result: LetterType[] = [];
+        for (let i = 0; i < inputWord.length; i++) {
+            const currentLetter = inputWord[i];
+            const isIncluded = this.word.includes(currentLetter);
+            if (isIncluded === true) {
+                const sameIndex = this.word[i] === currentLetter;
+                if (sameIndex === true) {
+                    result[i] = 'correct';
+                } else {
+                    result[i] = 'wrong-spot';
+                }
+            } else {
+                result[i] = 'not-include';
+            }
+        }
+        return result;
     }
 
 }

@@ -18,9 +18,9 @@ const Keyboard: React.FC<any> = () => {
   return (
     <K>
       {constants.KEYBOARDS.map((row, idx) => (
-        <R key={idx}>
+        <R key={new Date().getTime().toString() + idx}>
           {row.map((k, idx) => (
-            <Key key={idx} letter={k} />
+            <Key key={new Date().getTime().toString() + idx} letter={k} />
           ))}
         </R>
       ))}
