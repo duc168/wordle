@@ -4,3 +4,5 @@ node_modules
 dist
 .vscode
 tsconfig.node.json
+jest.config.js
+coverage

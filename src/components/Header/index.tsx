@@ -22,7 +22,9 @@ const Title = styled.div<{ height: string }>`
 const Header: React.FC<any> = () => {
   return (
     <Container>
-      <Title height={constants.HEADER_HEIGHT}>{configs.title}</Title>
+      <Title data-testid="wordle-header" height={constants.HEADER_HEIGHT}>
+        {configs.title}
+      </Title>
     </Container>
   );
 };

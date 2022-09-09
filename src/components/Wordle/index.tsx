@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import constants from '@/constants';
 import { useWordleContext } from '@/contexts/wordleContext';
 
+import Toast from '../common/Toast';
+
 import Keyboard from './Keyboard';
 import Tiles from './Tiles';
-import Toast from './Toast';
 
 const Main = styled.div<{ headerHeight: string }>`
   max-width: 500px;
