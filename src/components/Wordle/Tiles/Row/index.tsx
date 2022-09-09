@@ -31,6 +31,7 @@ const Row: React.FC<Props> = ({ table }) => {
             />
           );
         }
+
         return (
           <Letter key={idx} idx={idx} letter={record.letter.toUpperCase()} type={record.type} />
         );

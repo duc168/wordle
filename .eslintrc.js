@@ -8,11 +8,12 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'import', 'prettier', 'simple-import-sort'],
+  plugins: ['@typescript-eslint', 'import', 'prettier', 'simple-import-sort', 'react-hooks'],
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
+    'plugin:react/recommended',
   ],
   root: true,
   env: {
@@ -108,6 +109,14 @@ module.exports = {
     'consistent-return': 'off',
     'max-classes-per-file': 'off',
     camelcase: ['error', { ignoreDestructuring: true, ignoreImports: true, allow: ['trait_type'] }],
+    'padding-line-between-statements': [
+      "error",
+      {
+        blankLine: "always", 
+        prev: ["const", "let", "var", "if", "expression"],
+        next: "*",
+      }
+    ]
   },
   overrides: [
     {

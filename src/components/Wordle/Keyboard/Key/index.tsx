@@ -16,13 +16,17 @@ type KeyType = 'included' | 'not-include' | 'not-selected-yet';
 
 const backgroundColorHandler = (type: KeyType) => {
   if (type === 'included') return '#6aaa64';
+
   if (type === 'not-include') return '#787c7e';
+
   return '#d3d6da';
 };
 
 const colorHandler = (type: KeyType) => {
   if (type === 'included') return '#ffffff';
+
   if (type === 'not-include') return '#ffffff';
+
   return '#000000';
 };
 
@@ -53,18 +57,24 @@ const K = styled.button<{ keyType: KeyType }>`
 
 const getKeyType = (currentDatabase: IDatabase, letter: string): KeyType => {
   const submittedTables: ITable[] = currentDatabase.filter((table) => table.submitted === true);
+
   if (submittedTables.length === 0) return 'not-selected-yet';
+
   const currentTableData = submittedTables
     .map((table) => table.data)
     .reduce((pre, cur) => {
       return [...pre, ...cur];
     });
+
   const alreadyTypeLetter = currentTableData.filter((item) => item.letter === letter);
+
   if (alreadyTypeLetter.length > 0) {
     const isIncluded =
       alreadyTypeLetter.filter((item) => item.type === 'correct' || item.type === 'wrong-spot')
         .length > 0;
+
     if (isIncluded === true) return 'included';
+
     return 'not-include';
   } else {
     return 'not-selected-yet';
@@ -72,32 +82,44 @@ const getKeyType = (currentDatabase: IDatabase, letter: string): KeyType => {
 };
 
 const KEY_CODES = keyCodes;
+
 const Key: React.FC<Props> = ({ letter }) => {
   const { addLetter, removeLetter, compare, keyboardDatabase } = useWordleContext();
+
   const keyType = getKeyType(keyboardDatabase, letter);
+
   const keyInteractHandler = (inputLetter: string) => {
     if (inputLetter === 'backspace') {
       removeLetter();
+
       return;
     }
+
     if (inputLetter === 'enter') {
       compare();
+
       return;
     }
+
     addLetter(inputLetter);
   };
+
   useEffect(() => {
     const LETTER = letter as string;
+
     const handler = (e: KeyboardEvent) => {
       if (e.keyCode == KEY_CODES[LETTER]) {
         keyInteractHandler(letter);
       }
     };
+
     document.addEventListener('keydown', handler);
+
     return () => {
       document.removeEventListener('keydown', handler);
     };
   }, [letter]);
+
   if (letter === 'backspace') {
     return (
       <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
@@ -105,6 +127,7 @@ const Key: React.FC<Props> = ({ letter }) => {
       </K>
     );
   }
+
   return (
     <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
       {letter}

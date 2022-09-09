@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\"",
-    "lint-fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --fix"
+    "lint.fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "axios": "0.27.2",
@@ -15,6 +15,7 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-toastify": "9.0.8",
     "styled-components": "5.3.5",
     "uuid": "9.0.0"
   },
@@ -32,6 +33,8 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "^7.31.8",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "8.0.0",
     "prettier": "2.7.1",
     "typescript": "4.6.4",

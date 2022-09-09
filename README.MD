@@ -14,7 +14,7 @@
 6. show "how to play" window on first
 7. show notification on complete (share or close)
 8. show notification on failed (try again or close)
-9. apply eslint
+9. apply eslint/prettier
 10. after 10 minutes, generate new word (from the list of words in json file from aws)
 11. add ci/cd (optional)
 12. try deploy it to GCP (optional)
@@ -27,3 +27,4 @@
 2. Use React.js and its Context Api to manage components and states inside the app.
 3. Get the list of words from AWS S3 service.
 4. Development environment (run ``yarn dev``) on port ``9999``
+5. Apply Eslint and Prettier for Coding Convention.

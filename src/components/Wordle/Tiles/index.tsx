@@ -12,8 +12,10 @@ const Container = styled.div`
   flex-direction: column;
   margin-bottom: 1rem;
 `;
+
 const Tiles: React.FC<any> = () => {
   const { database } = useWordleContext();
+
   return (
     <Container>
       {database.map((table) => {

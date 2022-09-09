@@ -15,13 +15,17 @@ interface Props {
 
 const colorHandler = (type: LetterType) => {
   if (type === 'typing') return '#000000';
+
   return 'white';
 };
 
 const backgroundColorHandler = (status: LetterType) => {
   if (status === 'correct') return '#6aaa64';
+
   if (status === 'wrong-spot') return '#c9b458';
+
   if (status === 'not-include') return '#787c7e';
+
   return 'transparent';
 };
 
@@ -75,6 +79,7 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
       </L2>
     );
   }
+
   return (
     <L
       type={type}

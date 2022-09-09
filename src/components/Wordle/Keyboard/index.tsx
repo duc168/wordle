@@ -11,11 +11,13 @@ const K = styled.div`
   margin: auto 0;
   width: 100%;
 `;
+
 const R = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 auto ${constants.KEY_GAP};
 `;
+
 const Keyboard: React.FC<any> = () => {
   return (
     <K>

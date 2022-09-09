@@ -6,6 +6,7 @@ import { WordleContextProvider } from '@/contexts/wordleContext';
 
 import Keyboard from './Keyboard';
 import Tiles from './Tiles';
+import Toast from './Toast';
 
 const Main = styled.div<{ headerHeight: string }>`
   max-width: 500px;
@@ -25,6 +26,7 @@ const Wordle: React.FC<any> = () => {
         <Tiles />
         <Keyboard />
       </WordleContextProvider>
+      <Toast />
     </Main>
   );
 };

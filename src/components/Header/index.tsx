@@ -20,6 +20,7 @@ const Title = styled.div<{ height: string }>`
   border-bottom: 1px solid #d3d6da;
   height: ${(props) => props.height};
 `;
+
 const Header: React.FC<any> = () => {
   return (
     <Container>
