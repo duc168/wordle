@@ -1,9 +1,11 @@
-import constants from "@/constants";
-import { WordleContextProvider } from "@/contexts/wordleContext";
-import React from "react";
-import styled from "styled-components";
-import Keyboard from "./Keyboard";
-import Tiles from "./Tiles";
+import React from 'react';
+import styled from 'styled-components';
+
+import constants from '@/constants';
+import { WordleContextProvider } from '@/contexts/wordleContext';
+
+import Keyboard from './Keyboard';
+import Tiles from './Tiles';
 
 const Main = styled.div<{ headerHeight: string }>`
   max-width: 500px;

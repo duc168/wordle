@@ -1,29 +1,18 @@
-import configs from "@/configs";
-import constants from "@/constants";
-import helpers from "@/helpers";
-import { IDatabase } from "@/interfaces";
-import word from "@/services/word";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useRef } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+
+import configs from '@/configs';
+import constants from '@/constants';
+import helpers from '@/helpers';
+import { IDatabase } from '@/interfaces';
+import word from '@/services/word';
 
 const useWordle = () => {
   const [completed, setCompleted] = useState(false);
 
   const [processing, setProcessing] = useState(false);
-  const [database, setDatabase] = useState<IDatabase>(
-    constants.DEFAULT_DATABASE
-  );
+  const [database, setDatabase] = useState<IDatabase>(constants.DEFAULT_DATABASE);
 
-  const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>(
-    constants.DEFAULT_DATABASE
-  );
+  const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>(constants.DEFAULT_DATABASE);
 
   const [currentAttempt, setCurrentAttempt] = useState(0);
 
@@ -43,21 +32,21 @@ const useWordle = () => {
 
   const checkAdd = () => {
     if (completedRef.current === true) {
-      console.info("Completed!");
+      console.info('Completed!');
       return false;
     }
     if (processingRef.current === true) {
-      console.error("Is processing, please wait");
+      console.error('Is processing, please wait');
       return false;
     }
     const attempt = currentAttemptRef.current;
     if (attempt >= configs.tryTimes) {
-      console.error("Exceed maximum attempt", attempt);
+      console.error('Exceed maximum attempt', attempt);
       return false;
     }
     const position = currentPositionRef.current + 1;
     if (position > configs.characterPerWord) {
-      console.error("Exceed maximum character", position - 1);
+      console.error('Exceed maximum character', position - 1);
       return false;
     }
     return true;
@@ -65,21 +54,21 @@ const useWordle = () => {
 
   const checkRemove = () => {
     if (completedRef.current === true) {
-      console.info("Completed!");
+      console.info('Completed!');
       return false;
     }
     if (processingRef.current === true) {
-      console.error("Is processing, please wait");
+      console.error('Is processing, please wait');
       return false;
     }
     const attempt = currentAttemptRef.current;
     if (attempt >= configs.tryTimes) {
-      console.error("Exceed maximum attempt", currentAttemptRef.current);
+      console.error('Exceed maximum attempt', currentAttemptRef.current);
       return false;
     }
     const position = currentPositionRef.current - 1;
     if (position < 0) {
-      console.error("No character to remove", position + 1);
+      console.error('No character to remove', position + 1);
       return false;
     }
     return true;
@@ -87,16 +76,16 @@ const useWordle = () => {
 
   const checkCompare = () => {
     if (completedRef.current === true) {
-      console.info("Completed!");
+      console.info('Completed!');
       return false;
     }
     if (processingRef.current === true) {
-      console.error("Is processing, please wait");
+      console.error('Is processing, please wait');
       return false;
     }
     const attempt = currentAttemptRef.current;
     if (attempt >= configs.tryTimes) {
-      console.error("Exceed maximum attempt", currentAttemptRef.current);
+      console.error('Exceed maximum attempt', currentAttemptRef.current);
       return false;
     }
     return true;
@@ -110,10 +99,7 @@ const useWordle = () => {
     const db = databaseRef.current;
     const clonedDatabase = helpers.clone(db);
     const attempt = currentAttemptRef.current;
-    clonedDatabase[attempt].data[position - 1] = helpers.createNewRecord(
-      "typing",
-      letter
-    );
+    clonedDatabase[attempt].data[position - 1] = helpers.createNewRecord('typing', letter);
     setDatabase(clonedDatabase);
   };
 
@@ -125,11 +111,12 @@ const useWordle = () => {
     const db = databaseRef.current;
     const clonedDatabase = helpers.clone(db);
     const attempt = currentAttemptRef.current;
-    clonedDatabase[attempt].data[position] = helpers.createNewRecord(
-      "typing",
-      ""
-    );
+    clonedDatabase[attempt].data[position] = helpers.createNewRecord('typing', '');
     setDatabase(clonedDatabase);
+  };
+
+  const syncDatabase = () => {
+    setKeyboardDatabase(databaseRef.current);
   };
 
   const compare = () => {
@@ -138,7 +125,7 @@ const useWordle = () => {
     setProcessing(true);
     const db = databaseRef.current;
     const attempt = currentAttemptRef.current;
-    const currentWord = db[attempt].data.map((d) => d.letter).join("");
+    const currentWord = db[attempt].data.map((d) => d.letter).join('');
     const result = word.compareWord(currentWord);
     if (result.length > 0) {
       const clonedDatabase = helpers.clone(db);
@@ -154,10 +141,8 @@ const useWordle = () => {
       setTimeout(() => {
         setProcessing(false);
         syncDatabase();
-        if (
-          result.filter((item) => item === "correct").length === result.length
-        ) {
-          console.info("Congratulation!");
+        if (result.filter((item) => item === 'correct').length === result.length) {
+          console.info('Congratulation!');
           setCompleted(true);
           return;
         }
@@ -174,13 +159,9 @@ const useWordle = () => {
   const fetchData = () => {
     setProcessing(true);
     word.getRandomWord().then((result) => {
-      console.log("Get Random Word", result);
+      console.log('Get Random Word', result);
       setProcessing(false);
     });
-  };
-
-  const syncDatabase = () => {
-    setKeyboardDatabase(databaseRef.current);
   };
 
   useEffect(() => {
@@ -238,9 +219,7 @@ export const WordleContextProvider: React.FC<any> = ({ children }) => {
 export const useWordleContext = () => {
   const value = useContext(context);
   if (!value) {
-    throw new Error(
-      "useWordleContext must be used inside WordleContextProvider"
-    );
+    throw new Error('useWordleContext must be used inside WordleContextProvider');
   }
   return value;
 };

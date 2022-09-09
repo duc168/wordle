@@ -1,9 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import Letter from "./Letter";
-import { ITable } from "@/interfaces";
-import { motion } from "framer-motion";
-import { useWordleContext } from "@/contexts/wordleContext";
+import React from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+
+import { ITable } from '@/interfaces';
+
+import Letter from './Letter';
 
 interface Props {
   table: ITable;
@@ -31,12 +32,7 @@ const Row: React.FC<Props> = ({ table }) => {
           );
         }
         return (
-          <Letter
-            key={idx}
-            idx={idx}
-            letter={record.letter.toUpperCase()}
-            type={record.type}
-          />
+          <Letter key={idx} idx={idx} letter={record.letter.toUpperCase()} type={record.type} />
         );
       })}
     </Container>

@@ -1,0 +1,6 @@
+.eslintrc.js
+vite-env.d.ts
+node_modules
+dist
+.vscode
+tsconfig.node.json

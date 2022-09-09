@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+
 const BackspaceSvg: React.FC<any> = () => {
   return (
     <svg

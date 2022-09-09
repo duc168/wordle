@@ -1,10 +1,10 @@
-import configs from "@/configs";
-import constants from "@/constants";
-import { useWordleContext } from "@/contexts/wordleContext";
-import { LetterType } from "@/interfaces";
-import { motion } from "framer-motion";
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+
+import configs from '@/configs';
+import constants from '@/constants';
+import { LetterType } from '@/interfaces';
 
 interface Props {
   letter: string;
@@ -14,19 +14,19 @@ interface Props {
 }
 
 const colorHandler = (type: LetterType) => {
-  if (type === "typing") return "#000000";
-  return "white";
+  if (type === 'typing') return '#000000';
+  return 'white';
 };
 
 const backgroundColorHandler = (status: LetterType) => {
-  if (status === "correct") return "#6aaa64";
-  if (status === "wrong-spot") return "#c9b458";
-  if (status === "not-include") return "#787c7e";
-  return "transparent";
+  if (status === 'correct') return '#6aaa64';
+  if (status === 'wrong-spot') return '#c9b458';
+  if (status === 'not-include') return '#787c7e';
+  return 'transparent';
 };
 
 const borderHandler = (letter: string) => {
-  return letter.length > 0 ? "#878a8c" : "#d3d6da";
+  return letter.length > 0 ? '#878a8c' : '#d3d6da';
 };
 
 const L = styled(motion.div)<{ type: LetterType; letter: string }>`
@@ -61,20 +61,14 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
         animate={{
           opacity: [1, 0.9, 1],
           rotateX: [0, 90, 0],
-          color: ["black", "black", colorHandler(type)],
-          backgroundColor: [
-            "transparent",
-            "transparent",
-            backgroundColorHandler(type),
-          ],
-          borderColor: ["none", "none", borderHandler(letter)],
+          color: ['black', 'black', colorHandler(type)],
+          backgroundColor: ['transparent', 'transparent', backgroundColorHandler(type)],
+          borderColor: ['none', 'none', borderHandler(letter)],
           scale: 1,
         }}
         transition={{
           duration: constants.COMPARE_SECONDS / 2,
-          delay:
-            (idx + 1) *
-            (constants.COMPARE_SECONDS / 2 / configs.characterPerWord),
+          delay: (idx + 1) * (constants.COMPARE_SECONDS / 2 / configs.characterPerWord),
         }}
       >
         {letter}
@@ -90,10 +84,10 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
         color: colorHandler(type),
         backgroundColor: backgroundColorHandler(type),
         borderColor: borderHandler(letter),
-        scale: letter === "" ? 1 : [1.25, 1],
+        scale: letter === '' ? 1 : [1.25, 1],
       }}
       transition={{
-        duration: type === "typing" ? 0.1 : constants.COMPARE_SECONDS,
+        duration: type === 'typing' ? 0.1 : constants.COMPARE_SECONDS,
       }}
       exit={{
         opacity: 0,

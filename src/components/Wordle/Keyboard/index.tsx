@@ -1,7 +1,9 @@
-import constants from "@/constants";
-import React from "react";
-import styled from "styled-components";
-import Key from "./Key";
+import React from 'react';
+import styled from 'styled-components';
+
+import constants from '@/constants';
+
+import Key from './Key';
 
 const K = styled.div`
   display: flex;

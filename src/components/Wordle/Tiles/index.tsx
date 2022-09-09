@@ -1,9 +1,9 @@
-import helpers from "@/helpers";
-import React from "react";
-import styled from "styled-components";
-import configs from "@/configs";
-import Row from "./Row";
-import { useWordleContext } from "@/contexts/wordleContext";
+import React from 'react';
+import styled from 'styled-components';
+
+import { useWordleContext } from '@/contexts/wordleContext';
+
+import Row from './Row';
 
 const Container = styled.div`
   display: flex;
