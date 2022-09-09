@@ -13,6 +13,10 @@ const KEY_HEIGHT = '48px';
 
 const KEY_GAP = '4px';
 
+const LETTER_WIDTH_HOW_TO_PLAY = '40px';
+
+const LETTER_HEIGHT_HOW_TO_PLAY = '40px';
+
 const LETTER_WIDTH = '62px';
 
 const LETTER_HEIGHT = '62px';
@@ -39,6 +43,10 @@ export default {
   KEY_GAP,
   LETTER_HEIGHT,
   LETTER_WIDTH,
+
+  LETTER_HEIGHT_HOW_TO_PLAY,
+  LETTER_WIDTH_HOW_TO_PLAY,
+
   KEYBOARDS,
 
   DEFAULT_DATABASE,

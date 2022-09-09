@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import constants from '@/constants';
 import { useWordleContext } from '@/contexts/wordleContext';
 
-import Toast from '../common/Toast';
-
+import HowToPlay from './HowToPlay';
 import Keyboard from './Keyboard';
 import Tiles from './Tiles';
+import Toast from './Toast';
 
 const Main = styled.div<{ headerHeight: string }>`
   max-width: 500px;
@@ -29,6 +29,13 @@ const Wordle: React.FC<any> = () => {
 
   return (
     <Main headerHeight={constants.HEADER_HEIGHT}>
+      <HowToPlay
+        tileProps={{
+          letterHeight: constants.LETTER_HEIGHT_HOW_TO_PLAY,
+          letterWidth: constants.LETTER_WIDTH_HOW_TO_PLAY,
+          processingSeconds: constants.COMPARE_SECONDS,
+        }}
+      />
       <Tiles
         letterHeight={constants.LETTER_HEIGHT}
         letterWidth={constants.LETTER_WIDTH}

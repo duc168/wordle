@@ -2,9 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import Letter from '@/components/common/Letter';
 import { ITable } from '@/interfaces';
-
-import Letter from './Letter';
 
 interface Props {
   table: ITable;

@@ -9,6 +9,8 @@ import toast from '@/services/toast';
 import word from '@/services/word';
 
 const useWordle = () => {
+  const [howToPlayPopupStatus, setHowToPlayPopupStatus] = useState(true);
+
   const [completed, setCompleted] = useState(false);
 
   const [processing, setProcessing] = useState(false);
@@ -242,6 +244,9 @@ const useWordle = () => {
   }, []);
 
   return {
+    howToPlayPopupStatus,
+    setHowToPlayPopupStatus,
+
     processing,
     currentTableId,
     currentTable,

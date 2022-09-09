@@ -2,14 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useWordleContext } from '@/contexts/wordleContext';
+import { ITileProps } from '@/interfaces';
 
 import Row from './Row';
-
-interface Props {
-  letterWidth: string;
-  letterHeight: string;
-  processingSeconds: number;
-}
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +14,7 @@ const Container = styled.div`
   margin-bottom: 1rem;
 `;
 
-const Tiles: React.FC<Props> = (props) => {
+const Tiles: React.FC<ITileProps> = (props) => {
   const { database } = useWordleContext();
 
   return (

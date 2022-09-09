@@ -3,17 +3,7 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import configs from '@/configs';
-import { LetterType } from '@/interfaces';
-
-interface Props {
-  letter: string;
-  type: LetterType;
-  idx: number;
-  submitted?: boolean;
-  letterWidth: string;
-  letterHeight: string;
-  processingSeconds: number;
-}
+import { ILetterProps, LetterType } from '@/interfaces';
 
 const colorHandler = (type: LetterType) => {
   if (type === 'typing') return '#000000';
@@ -56,13 +46,32 @@ const L = styled(motion.div)<{
   scale: 1;
 `;
 
-const L2 = styled(L)<{ processingSecond: number }>`
+const L2 = styled(motion.div)<{
+  type: LetterType;
+  letter: string;
+  letterWidth: string;
+  letterHeight: string;
+  processingSecond: number;
+}>`
+  border: 2px solid transparent;
+  width: ${(p) => p.letterWidth};
+  line-height: 2rem;
+  user-select: none;
+  height: ${(p) => p.letterHeight};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+  user-select: none;
+  scale: 1;
   /* opacity: 0; */
   transform: rotateX(-90deg);
   transition: ${(p) => p.processingSecond / 2}s;
 `;
 
-const Letter: React.FC<Props> = ({
+const Letter: React.FC<ILetterProps> = ({
   letter,
   type,
   idx,
@@ -83,12 +92,12 @@ const Letter: React.FC<Props> = ({
           rotateX: [0, 90, 0],
           color: ['black', 'black', colorHandler(type)],
           backgroundColor: ['transparent', 'transparent', backgroundColorHandler(type)],
-          borderColor: ['none', 'none', borderHandler(letter)],
+          // borderColor: ['none', 'none', borderHandler(letter)],
           scale: 1,
         }}
         transition={{
           duration: processingSeconds / 2,
-          delay: (idx + 1) * (processingSeconds / 2 / configs.characterPerWord),
+          delay: ((idx ?? 0) + 1) * (processingSeconds / 2 / configs.characterPerWord),
         }}
       >
         {letter}
