@@ -1,34 +1,46 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import constants from '@/constants';
+import { useWordleContext } from '@/contexts/wordleContext';
+import helpers from '@/helpers';
 
 import Key from './Key';
 
-const K = styled.div`
+interface Props {
+  keyHeight: string;
+  keyPadding: string;
+  keyGap: string;
+  keyboardModal: string[][];
+}
+
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin: auto 0;
   width: 100%;
 `;
 
-const R = styled.div`
+const Row = styled.div<{ keyGap: string }>`
   display: flex;
   flex-direction: row;
-  margin: 0 auto ${constants.KEY_GAP};
+  margin: 0 auto ${(p) => p.keyGap};
 `;
 
-const Keyboard: React.FC<any> = () => {
+const Keyboard: React.FC<Props> = ({ keyboardModal, keyGap, ...otherProps }) => {
+  const { keyboardDatabase } = useWordleContext();
+
+  if (!keyboardDatabase) return null;
+
   return (
-    <K>
-      {constants.KEYBOARDS.map((row, idx) => (
-        <R key={new Date().getTime().toString() + idx}>
-          {row.map((k, idx) => (
-            <Key key={new Date().getTime().toString() + idx} letter={k} />
+    <Container>
+      {keyboardModal.map((row) => (
+        <Row key={helpers.createRandomKey()} keyGap={keyGap}>
+          {row.map((letter) => (
+            <Key key={helpers.createRandomKey()} letter={letter} {...otherProps} />
           ))}
-        </R>
+        </Row>
       ))}
-    </K>
+    </Container>
   );
 };
 

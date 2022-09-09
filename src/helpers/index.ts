@@ -3,13 +3,17 @@ import { v4 } from 'uuid';
 
 import { IDatabase, ILetter, ITable, LetterType } from '@/interfaces';
 
+const createRandomKey = () => {
+  return v4();
+};
+
 const createArray = (numberOfItem: number) => {
   return Array.from(Array(numberOfItem).keys());
 };
 
 export const createNewRecord = (type: LetterType, letter: string): ILetter => {
   return {
-    id: v4(),
+    id: createRandomKey(),
     letter,
     type,
   };
@@ -18,11 +22,11 @@ export const createNewRecord = (type: LetterType, letter: string): ILetter => {
 export const createNewTable = (numberOfRecord: number, defaultRecordData: ILetter): ITable => {
   const data: ILetter[] = createArray(numberOfRecord).map(() => ({
     ...defaultRecordData,
-    id: v4(),
+    id: createRandomKey(),
   }));
 
   return {
-    id: v4(),
+    id: createRandomKey(),
     submitted: false,
     data,
   };
@@ -32,7 +36,7 @@ export const createNewDatabase = (numberOfTable: number, tableData: ITable): IDa
   return createArray(numberOfTable).map(() =>
     cloneDeep({
       ...tableData,
-      id: v4(),
+      id: createRandomKey(),
     }),
   );
 };
@@ -42,10 +46,10 @@ export const clone = <T>(data: T): T => {
 };
 
 export default {
+  createRandomKey,
   createArray,
   createNewRecord,
   createNewTable,
   createNewDatabase,
-
   clone,
 };

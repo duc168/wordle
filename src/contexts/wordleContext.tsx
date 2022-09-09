@@ -13,9 +13,9 @@ const useWordle = () => {
 
   const [processing, setProcessing] = useState(false);
 
-  const [database, setDatabase] = useState<IDatabase>(constants.DEFAULT_DATABASE);
+  const [database, setDatabase] = useState<IDatabase>();
 
-  const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>(constants.DEFAULT_DATABASE);
+  const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>();
 
   const [currentAttempt, setCurrentAttempt] = useState(0);
 
@@ -25,13 +25,23 @@ const useWordle = () => {
 
   const processingRef = useRef<boolean>(false);
 
-  const databaseRef = useRef<IDatabase>(constants.DEFAULT_DATABASE);
+  const databaseRef = useRef<IDatabase>();
 
-  const keyboardDatabaseRef = useRef<IDatabase>(constants.DEFAULT_DATABASE);
+  const keyboardDatabaseRef = useRef<IDatabase>();
 
   const currentAttemptRef = useRef<number>(0);
 
   const currentPositionRef = useRef<number>(0);
+
+  const currentTableId = !database ? undefined : database[currentAttempt]?.id;
+
+  const currentTable = !database ? undefined : database[currentAttempt];
+
+  const initDatabase = (inputDatabase: IDatabase) => {
+    setDatabase(inputDatabase);
+
+    setKeyboardDatabase(inputDatabase);
+  };
 
   const check = (customCheck: () => boolean) => {
     if (completedRef.current === true) {
@@ -98,6 +108,8 @@ const useWordle = () => {
 
     const db = databaseRef.current;
 
+    if (!db) return;
+
     const clonedDatabase = helpers.clone(db);
 
     const attempt = currentAttemptRef.current;
@@ -117,6 +129,8 @@ const useWordle = () => {
     setCurrentPosition(position);
 
     const db = databaseRef.current;
+
+    if (!db) return;
 
     const clonedDatabase = helpers.clone(db);
 
@@ -139,6 +153,8 @@ const useWordle = () => {
     setProcessing(true);
 
     const db = databaseRef.current;
+
+    if (!db) return;
 
     const attempt = currentAttemptRef.current;
 
@@ -181,7 +197,6 @@ const useWordle = () => {
 
         setCurrentPosition(0);
       }, constants.COMPARE_SECONDS * 1000);
-      // after processing turn to false, check if there is any attempt left, if yes, add one
     } else {
       setProcessing(false);
     }
@@ -228,12 +243,14 @@ const useWordle = () => {
 
   return {
     processing,
-    currentTableId: database[currentAttempt]?.id,
-    currentTable: database[currentAttempt],
+    currentTableId,
+    currentTable,
     currentAttempt,
     database,
     keyboardDatabase,
     completed,
+
+    initDatabase,
     addLetter,
     removeLetter,
     compare,

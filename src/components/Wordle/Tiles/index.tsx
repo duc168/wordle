@@ -5,6 +5,12 @@ import { useWordleContext } from '@/contexts/wordleContext';
 
 import Row from './Row';
 
+interface Props {
+  letterWidth: string;
+  letterHeight: string;
+  processingSeconds: number;
+}
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -13,13 +19,13 @@ const Container = styled.div`
   margin-bottom: 1rem;
 `;
 
-const Tiles: React.FC<any> = () => {
+const Tiles: React.FC<Props> = (props) => {
   const { database } = useWordleContext();
 
   return (
     <Container>
-      {database.map((table) => {
-        return <Row key={table.id} table={table} />;
+      {database?.map((table) => {
+        return <Row {...props} key={table.id} table={table} />;
       })}
     </Container>
   );

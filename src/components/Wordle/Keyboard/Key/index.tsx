@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
-import constants from '@/constants';
 import keyCodes from '@/constants/keycodes';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { IDatabase, ITable } from '@/interfaces';
 
 import BackspaceSvg from './BackspaceSvg';
 
+interface IButton {
+  keyType: KeyType;
+  keyHeight: string;
+  keyPadding: string;
+}
 interface Props {
   letter: string;
+  keyHeight: string;
+  keyPadding: string;
 }
 
 type KeyType = 'included' | 'not-include' | 'not-selected-yet';
@@ -30,15 +36,15 @@ const colorHandler = (type: KeyType) => {
   return '#000000';
 };
 
-const K = styled.button<{ keyType: KeyType }>`
+const Button = styled.button<IButton>`
   font-family: inherit;
   font-weight: bold;
   border: 0;
   padding: 0;
   margin: 0 6px 0 0;
-  height: ${constants.KEY_HEIGHT};
-  padding-left: ${constants.KEY_PADDING};
-  padding-right: ${constants.KEY_PADDING};
+  height: ${(p) => p.keyHeight};
+  padding-left: ${(p) => p.keyPadding};
+  padding-right: ${(p) => p.keyPadding};
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -55,7 +61,9 @@ const K = styled.button<{ keyType: KeyType }>`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
 `;
 
-const getKeyType = (currentDatabase: IDatabase, letter: string): KeyType => {
+const getKeyType = (currentDatabase: IDatabase | undefined, letter: string): KeyType => {
+  if (!currentDatabase) return 'not-selected-yet';
+
   const submittedTables: ITable[] = currentDatabase.filter((table) => table.submitted === true);
 
   if (submittedTables.length === 0) return 'not-selected-yet';
@@ -83,7 +91,7 @@ const getKeyType = (currentDatabase: IDatabase, letter: string): KeyType => {
 
 const KEY_CODES = keyCodes;
 
-const Key: React.FC<Props> = ({ letter }) => {
+const Key: React.FC<Props> = ({ letter, ...otherProps }) => {
   const { addLetter, removeLetter, compare, keyboardDatabase } = useWordleContext();
 
   const keyType = getKeyType(keyboardDatabase, letter);
@@ -122,16 +130,16 @@ const Key: React.FC<Props> = ({ letter }) => {
 
   if (letter === 'backspace') {
     return (
-      <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
+      <Button keyType={keyType} {...otherProps} onClick={() => keyInteractHandler(letter)}>
         <BackspaceSvg />
-      </K>
+      </Button>
     );
   }
 
   return (
-    <K keyType={keyType} onClick={() => keyInteractHandler(letter)}>
+    <Button keyType={keyType} {...otherProps} onClick={() => keyInteractHandler(letter)}>
       {letter}
-    </K>
+    </Button>
   );
 };
 

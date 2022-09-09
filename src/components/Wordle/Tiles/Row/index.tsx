@@ -8,6 +8,9 @@ import Letter from './Letter';
 
 interface Props {
   table: ITable;
+  letterWidth: string;
+  letterHeight: string;
+  processingSeconds: number;
 }
 
 const Container = styled(motion.div)`
@@ -16,13 +19,14 @@ const Container = styled(motion.div)`
   padding-block: 2.5px;
 `;
 
-const Row: React.FC<Props> = ({ table }) => {
+const Row: React.FC<Props> = ({ table, ...otherProps }) => {
   return (
     <Container initial={false}>
       {table.data.map((record, idx) => {
         if (table.submitted) {
           return (
             <Letter
+              {...otherProps}
               key={idx}
               idx={idx}
               letter={record.letter.toUpperCase()}
@@ -33,7 +37,13 @@ const Row: React.FC<Props> = ({ table }) => {
         }
 
         return (
-          <Letter key={idx} idx={idx} letter={record.letter.toUpperCase()} type={record.type} />
+          <Letter
+            key={idx}
+            idx={idx}
+            letter={record.letter.toUpperCase()}
+            type={record.type}
+            {...otherProps}
+          />
         );
       })}
     </Container>

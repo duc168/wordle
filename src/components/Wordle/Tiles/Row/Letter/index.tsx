@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import configs from '@/configs';
-import constants from '@/constants';
 import { LetterType } from '@/interfaces';
 
 interface Props {
@@ -11,6 +10,9 @@ interface Props {
   type: LetterType;
   idx: number;
   submitted?: boolean;
+  letterWidth: string;
+  letterHeight: string;
+  processingSeconds: number;
 }
 
 const colorHandler = (type: LetterType) => {
@@ -33,12 +35,17 @@ const borderHandler = (letter: string) => {
   return letter.length > 0 ? '#878a8c' : '#d3d6da';
 };
 
-const L = styled(motion.div)<{ type: LetterType; letter: string }>`
+const L = styled(motion.div)<{
+  type: LetterType;
+  letter: string;
+  letterWidth: string;
+  letterHeight: string;
+}>`
   border: 2px solid ${(props) => borderHandler(props.letter)};
-  width: ${constants.LETTER_WIDTH};
+  width: ${(p) => p.letterWidth};
   line-height: 2rem;
   user-select: none;
-  height: ${constants.LETTER_HEIGHT};
+  height: ${(p) => p.letterHeight};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -49,16 +56,25 @@ const L = styled(motion.div)<{ type: LetterType; letter: string }>`
   scale: 1;
 `;
 
-const L2 = styled(L)`
+const L2 = styled(L)<{ processingSecond: number }>`
   /* opacity: 0; */
   transform: rotateX(-90deg);
-  transition: ${constants.COMPARE_SECONDS / 2}s;
+  transition: ${(p) => p.processingSecond / 2}s;
 `;
 
-const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
+const Letter: React.FC<Props> = ({
+  letter,
+  type,
+  idx,
+  submitted,
+  processingSeconds,
+  ...otherProps
+}) => {
   if (submitted) {
     return (
       <L2
+        {...otherProps}
+        processingSecond={processingSeconds}
         type={type}
         letter={letter}
         initial={false}
@@ -71,8 +87,8 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
           scale: 1,
         }}
         transition={{
-          duration: constants.COMPARE_SECONDS / 2,
-          delay: (idx + 1) * (constants.COMPARE_SECONDS / 2 / configs.characterPerWord),
+          duration: processingSeconds / 2,
+          delay: (idx + 1) * (processingSeconds / 2 / configs.characterPerWord),
         }}
       >
         {letter}
@@ -82,6 +98,7 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
 
   return (
     <L
+      {...otherProps}
       type={type}
       letter={letter}
       initial={false}
@@ -92,7 +109,7 @@ const Letter: React.FC<Props> = ({ letter, type, idx, submitted }) => {
         scale: letter === '' ? 1 : [1.25, 1],
       }}
       transition={{
-        duration: type === 'typing' ? 0.1 : constants.COMPARE_SECONDS,
+        duration: type === 'typing' ? 0.1 : processingSeconds,
       }}
       exit={{
         opacity: 0,

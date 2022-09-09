@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import configs from '@/configs';
 import constants from '@/constants';
 
-const TITLE = configs.title;
-
 const Container = styled.header`
   margin: 0 0 1rem;
 `;
@@ -24,7 +22,7 @@ const Title = styled.div<{ height: string }>`
 const Header: React.FC<any> = () => {
   return (
     <Container>
-      <Title height={constants.HEADER_HEIGHT}>{TITLE}</Title>
+      <Title height={constants.HEADER_HEIGHT}>{configs.title}</Title>
     </Container>
   );
 };

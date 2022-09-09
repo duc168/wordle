@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import constants from '@/constants';
-import { WordleContextProvider } from '@/contexts/wordleContext';
+import { useWordleContext } from '@/contexts/wordleContext';
 
 import Keyboard from './Keyboard';
 import Tiles from './Tiles';
@@ -20,12 +20,25 @@ const Main = styled.div<{ headerHeight: string }>`
 `;
 
 const Wordle: React.FC<any> = () => {
+  const { initDatabase } = useWordleContext();
+
+  useEffect(() => {
+    initDatabase(constants.DEFAULT_DATABASE);
+  }, []);
+
   return (
     <Main headerHeight={constants.HEADER_HEIGHT}>
-      <WordleContextProvider>
-        <Tiles />
-        <Keyboard />
-      </WordleContextProvider>
+      <Tiles
+        letterHeight={constants.LETTER_HEIGHT}
+        letterWidth={constants.LETTER_WIDTH}
+        processingSeconds={constants.COMPARE_SECONDS}
+      />
+      <Keyboard
+        keyGap={constants.KEY_GAP}
+        keyHeight={constants.KEY_HEIGHT}
+        keyPadding={constants.KEY_PADDING}
+        keyboardModal={constants.KEYBOARDS}
+      />
       <Toast />
     </Main>
   );
