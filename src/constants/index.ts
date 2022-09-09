@@ -1,11 +1,14 @@
 import configs from "@/configs";
 import helpers from "@/helpers";
 
-const TITLE_HEIGHT = '65px';
+const HEADER_HEIGHT = '65px';
 
-const KEY_PADDING = '20px';
+// const KEY_PADDING = '20px';
 
-const KEY_HEIGHT = '58px';
+// const KEY_HEIGHT = '58px';
+
+const KEY_PADDING = '10px';
+const KEY_HEIGHT = '48px';
 
 const KEY_GAP = '4px';
 
@@ -28,7 +31,7 @@ const DEFAULT_DATABASE = helpers.createNewDatabase(configs.tryTimes, DEFAULT_TAB
 const COMPARE_SECONDS = 4;
 
 export default {
-    TITLE_HEIGHT,
+    HEADER_HEIGHT,
 
     KEY_HEIGHT,
     KEY_PADDING,

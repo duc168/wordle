@@ -2,7 +2,7 @@ import configs from "@/configs";
 import constants from "@/constants";
 import helpers from "@/helpers";
 import { IDatabase } from "@/interfaces";
-import services from "@/services";
+import word from "@/services/word";
 import React, {
   createContext,
   useCallback,
@@ -139,7 +139,7 @@ const useWordle = () => {
     const db = databaseRef.current;
     const attempt = currentAttemptRef.current;
     const currentWord = db[attempt].data.map((d) => d.letter).join("");
-    const result = services.compareWord(currentWord);
+    const result = word.compareWord(currentWord);
     if (result.length > 0) {
       const clonedDatabase = helpers.clone(db);
       const table = clonedDatabase[attempt];
@@ -173,7 +173,7 @@ const useWordle = () => {
 
   const fetchData = () => {
     setProcessing(true);
-    services.getRandomWord().then((result) => {
+    word.getRandomWord().then((result) => {
       console.log("Get Random Word", result);
       setProcessing(false);
     });

@@ -19,3 +19,11 @@
 11. add ci/cd (optional)
 12. try deploy it to GCP (optional)
 13. Apply font (optional)
+
+
+
+## Document
+1. Use Vite as a build tool for fast development environment and building final bundles for production.
+2. Use React.js and its Context Api to manage components and states inside the app.
+3. Get the list of words from AWS S3 service.
+4. Development environment (run ``yarn dev``) on port ``9999``
