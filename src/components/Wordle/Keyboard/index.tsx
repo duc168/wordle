@@ -11,6 +11,7 @@ interface Props {
   keyPadding: string;
   keyGap: string;
   keyboardModal: string[][];
+  processingSeconds: number;
 }
 
 const Container = styled.div`

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -11,7 +11,7 @@ import CloseSvg from './CloseSvg';
 
 const Container = styled(motion.div)`
   display: block;
-  padding: 1rem;
+  padding: 1rem 2rem;
   background-color: #ffffff;
   border-radius: 8px;
   border: 1px solid #f6f7f8;
@@ -20,7 +20,7 @@ const Container = styled(motion.div)`
   position: relative;
 `;
 
-const CloseButton = styled(motion.div)`
+const CloseButton = styled(motion.a)`
   position: absolute;
   right: 1rem;
   top: 1rem;
@@ -29,7 +29,7 @@ const CloseButton = styled(motion.div)`
   cursor: pointer;
 `;
 
-const H1 = styled.h3`
+const H1 = styled.h1`
   text-align: center;
   text-transform: uppercase;
 `;
@@ -40,8 +40,8 @@ const Examples = styled.div`
 `;
 
 const Example = styled.div`
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 34px;
+  margin-bottom: 34px;
 `;
 
 const WordContainer = styled.div`
@@ -54,12 +54,17 @@ const WordContainer = styled.div`
 
 const HowToPlay: React.FC<{
   tileProps: ITileProps;
-}> = ({ tileProps }) => {
-  const { howToPlayPopupStatus, setHowToPlayPopupStatus } = useWordleContext();
+  defaultValue: boolean | undefined;
+}> = ({ tileProps, defaultValue }) => {
+  const { howToPlayPopupStatus, updateHowToPlayPopupStatus } = useWordleContext();
 
   const closeHandler = () => {
-    setHowToPlayPopupStatus(false);
+    updateHowToPlayPopupStatus(false);
   };
+
+  useEffect(() => {
+    updateHowToPlayPopupStatus(defaultValue);
+  }, []);
 
   return (
     <Popup open={howToPlayPopupStatus} onClose={closeHandler} position="top center">
@@ -68,7 +73,7 @@ const HowToPlay: React.FC<{
           y: 200,
         }}
         animate={{
-          y: 0,
+          y: -50,
         }}
         exit={{
           y: 200,
@@ -77,7 +82,15 @@ const HowToPlay: React.FC<{
           duration: 1,
         }}
       >
-        <CloseButton onClick={closeHandler} whileTap={{ scale: 0 }}>
+        <CloseButton
+          onClick={(e) => {
+            e.preventDefault();
+
+            e.stopPropagation();
+
+            closeHandler();
+          }}
+        >
           <CloseSvg />
         </CloseButton>
         <H1>How To Play</H1>

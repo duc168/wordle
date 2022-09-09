@@ -16,6 +16,7 @@ interface Props {
   letter: string;
   keyHeight: string;
   keyPadding: string;
+  processingSeconds: number;
 }
 
 type KeyType = 'included' | 'not-include' | 'not-selected-yet';
@@ -91,7 +92,7 @@ const getKeyType = (currentDatabase: IDatabase | undefined, letter: string): Key
 
 const KEY_CODES = keyCodes;
 
-const Key: React.FC<Props> = ({ letter, ...otherProps }) => {
+const Key: React.FC<Props> = ({ letter, processingSeconds, ...otherProps }) => {
   const { addLetter, removeLetter, compare, keyboardDatabase } = useWordleContext();
 
   const keyType = getKeyType(keyboardDatabase, letter);
@@ -104,7 +105,7 @@ const Key: React.FC<Props> = ({ letter, ...otherProps }) => {
     }
 
     if (inputLetter === 'enter') {
-      compare();
+      compare(processingSeconds);
 
       return;
     }

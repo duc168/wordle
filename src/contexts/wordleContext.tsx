@@ -1,27 +1,51 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { delay } from 'lodash';
 
 import configs from '@/configs';
-import constants from '@/constants';
 import messages from '@/constants/messages';
 import helpers from '@/helpers';
 import { IDatabase } from '@/interfaces';
+import { typeToEmoji } from '@/services/emoji';
+import local from '@/services/local';
 import toast from '@/services/toast';
 import word from '@/services/word';
 
+const INITIAL_STATE = {
+  counter: 0,
+  howToPlayPopupStatus: false,
+  sharePopupStatus: false,
+  completed: false,
+  processing: false,
+  currentAttempt: 0,
+  currentPosition: 0,
+};
+
 const useWordle = () => {
-  const [howToPlayPopupStatus, setHowToPlayPopupStatus] = useState(true);
+  const [counter, setCounter] = useState(INITIAL_STATE.counter);
 
-  const [completed, setCompleted] = useState(false);
+  const [howToPlayPopupStatus, setHowToPlayPopupStatus] = useState<boolean>(
+    INITIAL_STATE.howToPlayPopupStatus,
+  );
 
-  const [processing, setProcessing] = useState(false);
+  const [sharePopupStatus, setSharePopupStatus] = useState<boolean>(INITIAL_STATE.sharePopupStatus);
+
+  const [completed, setCompleted] = useState(INITIAL_STATE.completed);
+
+  const [processing, setProcessing] = useState(INITIAL_STATE.processing);
 
   const [database, setDatabase] = useState<IDatabase>();
 
   const [keyboardDatabase, setKeyboardDatabase] = useState<IDatabase>();
 
-  const [currentAttempt, setCurrentAttempt] = useState(0);
+  const [currentAttempt, setCurrentAttempt] = useState(INITIAL_STATE.currentAttempt);
 
-  const [currentPosition, setCurrentPosition] = useState(0);
+  const [currentPosition, setCurrentPosition] = useState(INITIAL_STATE.currentPosition);
+
+  const counterRef = useRef(0);
+
+  const howToPlayPopupStatusRef = useRef<boolean>(false);
+
+  const sharePopupStatusRef = useRef<boolean>(false);
 
   const completedRef = useRef<boolean>(false);
 
@@ -35,14 +59,48 @@ const useWordle = () => {
 
   const currentPositionRef = useRef<number>(0);
 
+  const counterIntervalIdRef = useRef<any>();
+
+  const lastDefaultDatabaseRef = useRef<IDatabase>();
+
   const currentTableId = !database ? undefined : database[currentAttempt]?.id;
 
   const currentTable = !database ? undefined : database[currentAttempt];
+
+  const reset = () => {
+    setHowToPlayPopupStatus(INITIAL_STATE.howToPlayPopupStatus);
+
+    setSharePopupStatus(INITIAL_STATE.sharePopupStatus);
+
+    setCompleted(INITIAL_STATE.completed);
+
+    setProcessing(INITIAL_STATE.processing);
+
+    setCurrentAttempt(INITIAL_STATE.currentAttempt);
+
+    setCurrentPosition(INITIAL_STATE.currentPosition);
+  };
 
   const initDatabase = (inputDatabase: IDatabase) => {
     setDatabase(inputDatabase);
 
     setKeyboardDatabase(inputDatabase);
+  };
+
+  const updateHowToPlayPopupStatus = (status: boolean | undefined) => {
+    if (status === undefined) {
+      setHowToPlayPopupStatus(true);
+    } else {
+      setHowToPlayPopupStatus(status);
+    }
+  };
+
+  const updateSharePopupStatus = (status: boolean | undefined) => {
+    if (status === undefined) {
+      setSharePopupStatus(false);
+    } else {
+      setSharePopupStatus(status);
+    }
   };
 
   const check = (customCheck: () => boolean) => {
@@ -55,7 +113,7 @@ const useWordle = () => {
     if (processingRef.current === true) {
       console.error(messages.APPLICATION_IS_PROCESSING);
 
-      toast.info(messages.APPLICATION_IS_PROCESSING);
+      // toast.info(messages.APPLICATION_IS_PROCESSING);
 
       return false;
     }
@@ -79,7 +137,7 @@ const useWordle = () => {
     if (position > configs.characterPerWord) {
       console.error(messages.EXCEED_MAX_CHARACTER);
 
-      toast.error(messages.EXCEED_MAX_CHARACTER);
+      // toast.error(messages.EXCEED_MAX_CHARACTER);
 
       return false;
     }
@@ -147,7 +205,13 @@ const useWordle = () => {
     setKeyboardDatabase(databaseRef.current);
   };
 
-  const compare = () => {
+  const syncPersistentData = () => {
+    local.setHowToPlayStatus(howToPlayPopupStatusRef.current);
+
+    local.saveDatabase(databaseRef.current);
+  };
+
+  const compare = (processingSeconds: number, tryTimes: number) => {
     const checked = check(() => true);
 
     if (!checked) return;
@@ -181,6 +245,8 @@ const useWordle = () => {
       setDatabase(clonedDatabase);
 
       setTimeout(() => {
+        syncPersistentData();
+
         setProcessing(false);
 
         syncDatabase();
@@ -190,32 +256,164 @@ const useWordle = () => {
 
           setCompleted(true);
 
+          local.setCompleted(true);
+
+          setSharePopupStatus(true);
+
           return;
         }
 
         const nextAttempt = attempt + 1;
 
+        if (nextAttempt >= configs.tryTimes) {
+          setCompleted(true);
+
+          local.setCompleted(true);
+
+          setSharePopupStatus(true);
+        }
+
         setCurrentAttempt(nextAttempt);
 
         setCurrentPosition(0);
-      }, constants.COMPARE_SECONDS * 1000);
+      }, processingSeconds * 1000);
     } else {
       setProcessing(false);
     }
   };
 
+  const clearCounterLoop = () => {
+    clearInterval(counterIntervalIdRef.current);
+
+    setCounter(0);
+  };
+
   const fetchData = () => {
     setProcessing(true);
 
-    word.getRandomWord().then((result) => {
-      console.log('Get Random Word', result);
-
+    word.getWord().then(() => {
       setProcessing(false);
     });
   };
 
+  const fetchNewData = async () => {
+    setProcessing(true);
+
+    await word.getNewWord();
+
+    setProcessing(false);
+  };
+
+  const retry = (defaultDatabase: IDatabase) => {
+    lastDefaultDatabaseRef.current = defaultDatabase;
+
+    clearCounterLoop();
+
+    local.clear();
+
+    helpers
+      .delay(100)
+      .then(() => {
+        reset();
+
+        return helpers.delay(100);
+      })
+      .then(() => {
+        initDatabase(defaultDatabase);
+
+        return fetchNewData();
+      })
+      .then(() => console.log('Retry successfully.'));
+  };
+
+  const init = (defaultDatabase: IDatabase) => {
+    lastDefaultDatabaseRef.current = defaultDatabase;
+
+    const cached = local.getDatabase();
+
+    const expired = local.getExpiredDate();
+
+    if (!cached || !expired || helpers.isExpired(expired)) {
+      retry(defaultDatabase);
+    } else {
+      const currentAttempt = cached.filter((c) => c.submitted === true).length;
+
+      setCurrentAttempt(currentAttempt);
+
+      if (currentAttempt === configs.tryTimes) {
+        retry(defaultDatabase);
+
+        return;
+      }
+
+      initDatabase(cached);
+
+      const completedCache = local.getCompleted();
+
+      if (!completedCache) return;
+
+      setCompleted(completedCache);
+    }
+  };
+
+  const share = () => {
+    const db = databaseRef.current;
+
+    if (!db) {
+      console.error('No data to share', db);
+
+      return;
+    }
+
+    const tiles = db.map((table) => table.data.map((r) => typeToEmoji(r.type)));
+
+    const sharingQuote = helpers.getSharingText(
+      currentAttemptRef.current + 1,
+      configs.tryTimes,
+      tiles,
+    );
+
+    console.log(sharingQuote);
+
+    helpers.copyToClipboard(sharingQuote);
+  };
+
+  useEffect(() => {
+    counterRef.current = counter;
+  }, [counter]);
+
   useEffect(() => {
     completedRef.current = completed;
+
+    if (completed === true) {
+      const expired = local.getExpiredDate();
+
+      if (!expired) return;
+
+      const remains = expired - new Date().getTime();
+
+      const remainSeconds = Math.floor(remains / 1000);
+
+      setCounter(remainSeconds);
+
+      counterIntervalIdRef.current = setInterval(() => {
+        if (counterRef.current <= 0) {
+          clearCounterLoop();
+
+          const lastDefaultDb = lastDefaultDatabaseRef.current;
+
+          if (lastDefaultDb) retry(lastDefaultDb);
+
+          return;
+        }
+
+        setCounter((c) => c - 1);
+      }, 1000);
+
+      return () => {
+        clearCounterLoop();
+      };
+    }
   }, [completed]);
 
   useEffect(() => {
@@ -238,6 +436,14 @@ const useWordle = () => {
     currentPositionRef.current = currentPosition;
   }, [currentPosition]);
 
+  useEffect(() => {
+    howToPlayPopupStatusRef.current = howToPlayPopupStatus;
+  }, [howToPlayPopupStatus]);
+
+  useEffect(() => {
+    sharePopupStatusRef.current = sharePopupStatus;
+  }, [sharePopupStatus]);
+
   // initialize
   useEffect(() => {
     fetchData();
@@ -245,7 +451,15 @@ const useWordle = () => {
 
   return {
     howToPlayPopupStatus,
-    setHowToPlayPopupStatus,
+    updateHowToPlayPopupStatus,
+    sharePopupStatus,
+    updateSharePopupStatus,
+
+    setCurrentAttempt,
+    setCurrentPosition,
+
+    counter,
+    setCounter,
 
     processing,
     currentTableId,
@@ -255,10 +469,13 @@ const useWordle = () => {
     keyboardDatabase,
     completed,
 
-    initDatabase,
+    init,
     addLetter,
     removeLetter,
     compare,
+
+    retry,
+    share,
   };
 };
 

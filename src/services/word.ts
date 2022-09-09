@@ -1,20 +1,28 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 import configs from '@/configs';
+import helpers from '@/helpers';
 import { LetterType } from '@/interfaces';
 
+import local from './local';
 import toast from './toast';
 
 class WordService {
   private instance: AxiosInstance;
   private words: string[];
   private word: string;
+  private wordIndex: number;
+  private expiredTime: number;
   constructor() {
     this.instance = axios.create();
 
     this.words = [];
 
     this.word = '';
+
+    this.wordIndex = -1;
+
+    this.expiredTime = -1;
   }
 
   private async getWords() {
@@ -31,11 +39,21 @@ class WordService {
     }
   }
 
-  public async getRandomWord() {
+  private async getRandomWord() {
     try {
       this.words = await this.getWords();
 
-      this.word = this.words[Math.floor(Math.random() * this.words.length)];
+      this.wordIndex = Math.floor(Math.random() * this.words.length);
+
+      this.word = this.words[this.wordIndex];
+
+      this.expiredTime = new Date().getTime() + helpers.convertMinutesToMilliseconds(10);
+
+      console.log('Cheating: ', this.word);
+
+      local.setSecret(this.wordIndex);
+
+      local.setExpiredDate(this.expiredTime);
 
       return true;
     } catch (error) {
@@ -45,6 +63,50 @@ class WordService {
 
       return false;
     }
+  }
+
+  private async getCachedWord() {
+    try {
+      this.words = await this.getWords();
+
+      const secret = local.getSecret();
+
+      const expiredDate = local.getExpiredDate();
+
+      if (!secret) throw new Error('No secret');
+
+      if (!expiredDate) throw new Error('No expired date');
+
+      if (helpers.isExpired(expiredDate) === true) throw new Error('Secret is expired.');
+
+      this.wordIndex = secret;
+
+      this.word = this.words[this.wordIndex];
+
+      return true;
+    } catch (error) {
+      console.log('Error getRandomWord', error);
+
+      toast.error('Can not get random word');
+
+      return false;
+    }
+  }
+
+  public async getWord() {
+    const secret = local.getSecret();
+
+    const expiredDate = local.getExpiredDate();
+
+    if (!secret || !expiredDate || helpers.isExpired(expiredDate)) {
+      return await this.getRandomWord();
+    } else {
+      return await this.getCachedWord();
+    }
+  }
+
+  public async getNewWord() {
+    return await this.getRandomWord();
   }
 
   public compareWord(inputWord: string): LetterType[] {

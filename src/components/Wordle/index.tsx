@@ -3,9 +3,12 @@ import styled from 'styled-components';
 
 import constants from '@/constants';
 import { useWordleContext } from '@/contexts/wordleContext';
+import local from '@/services/local';
 
+import Counter from './Counter';
 import HowToPlay from './HowToPlay';
 import Keyboard from './Keyboard';
+import SharePopup from './SharePopup';
 import Tiles from './Tiles';
 import Toast from './Toast';
 
@@ -21,15 +24,18 @@ const Main = styled.div<{ headerHeight: string }>`
 `;
 
 const Wordle: React.FC<any> = () => {
-  const { initDatabase } = useWordleContext();
+  const howToPlayDefaultValue = local.getHowToPlayStatus();
+
+  const { init } = useWordleContext();
 
   useEffect(() => {
-    initDatabase(constants.DEFAULT_DATABASE);
+    init(constants.DEFAULT_DATABASE);
   }, []);
 
   return (
     <Main headerHeight={constants.HEADER_HEIGHT}>
       <HowToPlay
+        defaultValue={howToPlayDefaultValue}
         tileProps={{
           letterHeight: constants.LETTER_HEIGHT_HOW_TO_PLAY,
           letterWidth: constants.LETTER_WIDTH_HOW_TO_PLAY,
@@ -41,12 +47,15 @@ const Wordle: React.FC<any> = () => {
         letterWidth={constants.LETTER_WIDTH}
         processingSeconds={constants.COMPARE_SECONDS}
       />
+      <Counter />
       <Keyboard
         keyGap={constants.KEY_GAP}
         keyHeight={constants.KEY_HEIGHT}
         keyPadding={constants.KEY_PADDING}
         keyboardModal={constants.KEYBOARDS}
+        processingSeconds={constants.COMPARE_SECONDS}
       />
+      <SharePopup defaultDatabase={constants.DEFAULT_DATABASE} />
       <Toast />
     </Main>
   );

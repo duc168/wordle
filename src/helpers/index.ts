@@ -11,7 +11,7 @@ const createArray = (numberOfItem: number) => {
   return Array.from(Array(numberOfItem).keys());
 };
 
-export const createNewRecord = (type: LetterType, letter: string): ILetter => {
+const createNewRecord = (type: LetterType, letter: string): ILetter => {
   return {
     id: createRandomKey(),
     letter,
@@ -19,7 +19,7 @@ export const createNewRecord = (type: LetterType, letter: string): ILetter => {
   };
 };
 
-export const createNewTable = (numberOfRecord: number, defaultRecordData: ILetter): ITable => {
+const createNewTable = (numberOfRecord: number, defaultRecordData: ILetter): ITable => {
   const data: ILetter[] = createArray(numberOfRecord).map(() => ({
     ...defaultRecordData,
     id: createRandomKey(),
@@ -32,7 +32,7 @@ export const createNewTable = (numberOfRecord: number, defaultRecordData: ILette
   };
 };
 
-export const createNewDatabase = (numberOfTable: number, tableData: ITable): IDatabase => {
+const createNewDatabase = (numberOfTable: number, tableData: ITable): IDatabase => {
   return createArray(numberOfTable).map(() =>
     cloneDeep({
       ...tableData,
@@ -41,8 +41,74 @@ export const createNewDatabase = (numberOfTable: number, tableData: ITable): IDa
   );
 };
 
-export const clone = <T>(data: T): T => {
+const clone = <T>(data: T): T => {
   return cloneDeep(data);
+};
+
+const convertMinutesToMilliseconds = (minutes: number) => {
+  return minutes * 60 * 1000;
+};
+
+const isExpired = (timeInMilliseconds: number) => {
+  const currentTime = new Date().getTime();
+
+  return timeInMilliseconds <= currentTime;
+};
+
+const getTwoDigits = (input: number) => {
+  if (input < 10) return `0${input}`;
+
+  return input;
+};
+
+const getToday = () => {
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const month = now.getMonth();
+
+  const day = now.getDate();
+
+  const hour = now.getHours();
+
+  const minute = now.getMinutes();
+
+  const second = now.getSeconds();
+
+  const YYYY = year;
+
+  const MM = getTwoDigits(month + 1);
+
+  const DD = getTwoDigits(day);
+
+  const hh = getTwoDigits(hour);
+
+  const mm = getTwoDigits(minute);
+
+  const ss = getTwoDigits(second);
+
+  return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`;
+};
+
+const getSharingText = (attemptCount: number, maxAttempt: number, tiles: string[][]) => {
+  const infoText = `Wordle ${getToday()} ${attemptCount}/${maxAttempt}`;
+
+  const tilesText = tiles.map((row) => row.join('')).join('\n');
+
+  return [infoText, tilesText].join('\n\n');
+};
+
+const delay = (milliseconds: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, milliseconds);
+  });
+};
+
+const copyToClipboard = (text: string) => {
+  return navigator.clipboard.writeText(text);
 };
 
 export default {
@@ -52,4 +118,10 @@ export default {
   createNewTable,
   createNewDatabase,
   clone,
+  convertMinutesToMilliseconds,
+  isExpired,
+
+  getSharingText,
+  delay,
+  copyToClipboard,
 };
