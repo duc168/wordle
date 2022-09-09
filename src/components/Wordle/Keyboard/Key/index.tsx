@@ -1,21 +1,16 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
+import configs from '@/configs';
 import keyCodes from '@/constants/keycodes';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { IDatabase, ITable } from '@/interfaces';
+import { deviceMin } from '@/services/css';
 
 import BackspaceSvg from './BackspaceSvg';
 
-interface IButton {
-  keyType: KeyType;
-  keyHeight: string;
-  keyPadding: string;
-}
 interface Props {
   letter: string;
-  keyHeight: string;
-  keyPadding: string;
   processingSeconds: number;
 }
 
@@ -37,15 +32,16 @@ const colorHandler = (type: KeyType) => {
   return '#000000';
 };
 
-const Button = styled.button<IButton>`
+const Button = styled.button<{ keyType: KeyType }>`
   font-family: inherit;
   font-weight: bold;
   border: 0;
   padding: 0;
-  margin: 0 6px 0 0;
-  height: ${(p) => p.keyHeight};
-  padding-left: ${(p) => p.keyPadding};
-  padding-right: ${(p) => p.keyPadding};
+  /* margin: 0 6px 0 0; */
+  height: 40px;
+  /* width: 40px; */
+  padding-left: 10px;
+  padding-right: 10px;
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -60,6 +56,14 @@ const Button = styled.button<IButton>`
   align-items: center;
   text-transform: uppercase;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  @media ${deviceMin.laptop} {
+    height: 58px;
+    /* width: 58px; */
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 16px;
+  }
 `;
 
 const getKeyType = (currentDatabase: IDatabase | undefined, letter: string): KeyType => {
@@ -105,7 +109,7 @@ const Key: React.FC<Props> = ({ letter, processingSeconds, ...otherProps }) => {
     }
 
     if (inputLetter === 'enter') {
-      compare(processingSeconds);
+      compare(processingSeconds, configs.tryTimes);
 
       return;
     }

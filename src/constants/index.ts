@@ -3,16 +3,6 @@ import helpers from '@/helpers';
 
 const HEADER_HEIGHT = '65px';
 
-// const KEY_PADDING = '20px';
-
-// const KEY_HEIGHT = '58px';
-
-const KEY_PADDING = '10px';
-
-const KEY_HEIGHT = '48px';
-
-const KEY_GAP = '4px';
-
 const LETTER_WIDTH_HOW_TO_PLAY = '40px';
 
 const LETTER_HEIGHT_HOW_TO_PLAY = '40px';
@@ -38,9 +28,6 @@ const COMPARE_SECONDS = 4;
 export default {
   HEADER_HEIGHT,
 
-  KEY_HEIGHT,
-  KEY_PADDING,
-  KEY_GAP,
   LETTER_HEIGHT,
   LETTER_WIDTH,
 

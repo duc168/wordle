@@ -5,7 +5,7 @@ import configs from '@/configs';
 import constants from '@/constants';
 
 const Container = styled.header`
-  margin: 0 0 1rem;
+  /* margin: 0 0 1rem; */
 `;
 
 const Title = styled.div<{ height: string }>`

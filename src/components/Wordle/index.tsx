@@ -10,7 +10,6 @@ import HowToPlay from './HowToPlay';
 import Keyboard from './Keyboard';
 import SharePopup from './SharePopup';
 import Tiles from './Tiles';
-import Toast from './Toast';
 
 const Main = styled.div<{ headerHeight: string }>`
   max-width: 500px;
@@ -20,7 +19,7 @@ const Main = styled.div<{ headerHeight: string }>`
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
 `;
 
 const Wordle: React.FC<any> = () => {
@@ -33,7 +32,8 @@ const Wordle: React.FC<any> = () => {
   }, []);
 
   return (
-    <Main headerHeight={constants.HEADER_HEIGHT}>
+    <Main headerHeight={'70px'}>
+      <div></div>
       <HowToPlay
         defaultValue={howToPlayDefaultValue}
         tileProps={{
@@ -48,15 +48,8 @@ const Wordle: React.FC<any> = () => {
         processingSeconds={constants.COMPARE_SECONDS}
       />
       <Counter />
-      <Keyboard
-        keyGap={constants.KEY_GAP}
-        keyHeight={constants.KEY_HEIGHT}
-        keyPadding={constants.KEY_PADDING}
-        keyboardModal={constants.KEYBOARDS}
-        processingSeconds={constants.COMPARE_SECONDS}
-      />
+      <Keyboard keyboardModal={constants.KEYBOARDS} processingSeconds={constants.COMPARE_SECONDS} />
       <SharePopup defaultDatabase={constants.DEFAULT_DATABASE} />
-      <Toast />
     </Main>
   );
 };
