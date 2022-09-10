@@ -111,7 +111,7 @@ const HowToPlay: React.FC<{
         >
           <CloseSvg />
         </CloseButton>
-        <Title>How To Play</Title>
+        <Title data-testid="how-to-play-title">How To Play</Title>
         <p>
           Guess the <strong>WORDLE</strong> in six tries.
         </p>
@@ -124,7 +124,7 @@ const HowToPlay: React.FC<{
           <p>
             <strong>Examples</strong>
           </p>
-          <Example>
+          <Example data-testid="how-to-play-example">
             <WordContainer>
               <Letter letter="W" type="correct" isExample submitted {...tileProps} />
               <Letter letter="E" type="typing" isExample {...tileProps} />
@@ -137,7 +137,7 @@ const HowToPlay: React.FC<{
             </p>
           </Example>
 
-          <Example>
+          <Example data-testid="how-to-play-example">
             <WordContainer>
               <Letter letter="P" type="typing" isExample {...tileProps} />
               <Letter letter="I" type="wrong-spot" isExample submitted {...tileProps} />
@@ -150,7 +150,7 @@ const HowToPlay: React.FC<{
             </p>
           </Example>
 
-          <Example>
+          <Example data-testid="how-to-play-example">
             <WordContainer>
               <Letter letter="V" type="typing" isExample {...tileProps} />
               <Letter letter="A" type="typing" isExample {...tileProps} />

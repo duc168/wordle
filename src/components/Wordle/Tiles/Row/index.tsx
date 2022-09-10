@@ -20,7 +20,7 @@ const Container = styled(motion.div)`
 
 const Row: React.FC<Props> = ({ table, ...otherProps }) => {
   return (
-    <Container initial={false}>
+    <Container initial={false} data-testid="wordle-row">
       {table.data.map((record, idx) => {
         if (table.submitted) {
           return (
