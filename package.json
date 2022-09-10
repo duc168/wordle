@@ -1,8 +1,9 @@
 {
   "name": "wordle",
+  "description": "A Wordle clone app",
   "private": true,
-  "version": "0.0.0",
-  "author": "duc168",
+  "version": "0.0.1",
+  "author": "victor.tran.august@gmail.com",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
