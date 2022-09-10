@@ -258,7 +258,7 @@ const useWordle = () => {
 
     setDatabase(clonedDatabase);
 
-    await helpers.delay(processingSeconds * 1000);
+    await helpers.delay(processingSeconds * 0.72 * 1000);
 
     syncPersistentData();
 

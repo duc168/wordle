@@ -6,32 +6,42 @@ import styled from 'styled-components';
 import Letter from '@/components/common/Letter';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { ITileProps } from '@/interfaces';
+import { deviceMin } from '@/services/css';
 
 import CloseSvg from './CloseSvg';
 
 const Container = styled(motion.div)`
   display: block;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   background-color: #ffffff;
   border-radius: 8px;
   border: 1px solid #f6f7f8;
   color: #000000;
   box-shadow: 0 4px 23px 0 rgb(0 0 0 / 20%);
   position: relative;
+  font-size: 12px;
+  @media ${deviceMin.laptopL} {
+    font-size: 16px;
+  }
 `;
 
 const CloseButton = styled(motion.a)`
   position: absolute;
-  right: 1rem;
-  top: 1rem;
+  right: 0.5rem;
+  top: 0.5rem;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  @media ${deviceMin.laptopL} {
+    right: 1rem;
+    top: 1rem;
+  }
 `;
 
-const H1 = styled.h1`
+const Title = styled.h1`
   text-align: center;
   text-transform: uppercase;
+  font-size: 2rem;
 `;
 
 const Examples = styled.div`
@@ -40,8 +50,12 @@ const Examples = styled.div`
 `;
 
 const Example = styled.div`
-  margin-top: 34px;
-  margin-bottom: 34px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  @media ${deviceMin.laptopL} {
+    margin-top: 34px;
+    margin-bottom: 34px;
+  }
 `;
 
 const WordContainer = styled.div`
@@ -96,7 +110,7 @@ const HowToPlay: React.FC<{
         >
           <CloseSvg />
         </CloseButton>
-        <H1>How To Play</H1>
+        <Title>How To Play</Title>
         <p>
           Guess the <strong>WORDLE</strong> in six tries.
         </p>
