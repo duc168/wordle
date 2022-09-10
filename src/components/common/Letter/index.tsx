@@ -62,7 +62,7 @@ const SubmittedLetter = styled(motion.div)<{
   scale: 1;
 `;
 
-const ExampleLetter = styled(motion.div)<{
+const ExampleSubmitLetter = styled(motion.div)<{
   type: LetterType;
   letter: string;
   letterWidth: string;
@@ -83,6 +83,29 @@ const ExampleLetter = styled(motion.div)<{
   scale: 1;
 `;
 
+const ExampleLetter = styled(motion.div)<{
+  type: LetterType;
+  letter: string;
+  letterWidth: string;
+  letterHeight: string;
+}>`
+  border: 2px solid ${(props) => borderHandler(props.letter)};
+  width: 100%;
+  width: ${(p) => p.letterWidth};
+  line-height: 2rem;
+  user-select: none;
+  height: ${(p) => p.letterHeight};
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  align-items: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+  user-select: none;
+  scale: 1;
+`;
+
 const Letter: React.FC<ILetterProps> = ({
   letter,
   type,
@@ -92,9 +115,9 @@ const Letter: React.FC<ILetterProps> = ({
   processingSeconds,
   ...otherProps
 }) => {
-  if (isExample) {
+  if (isExample && submitted) {
     return (
-      <ExampleLetter
+      <ExampleSubmitLetter
         {...otherProps}
         processingSecond={processingSeconds}
         type={type}
@@ -117,6 +140,30 @@ const Letter: React.FC<ILetterProps> = ({
         }}
       >
         {letter}
+      </ExampleSubmitLetter>
+    );
+  }
+
+  if (isExample && !submitted) {
+    return (
+      <ExampleLetter
+        {...otherProps}
+        type={type}
+        letter={letter}
+        animate={{
+          color: colorHandler(type),
+          backgroundColor: backgroundColorHandler(type),
+          borderColor: borderHandler(letter),
+          scale: letter === '' ? 1 : [1.25, 1],
+        }}
+        transition={{
+          duration: type === 'typing' ? 0.1 : processingSeconds / 2,
+        }}
+        exit={{
+          rotateX: 90,
+        }}
+      >
+        {letter}
       </ExampleLetter>
     );
   }
@@ -124,7 +171,6 @@ const Letter: React.FC<ILetterProps> = ({
   if (submitted) {
     return (
       <SubmittedLetter
-        // {...otherProps}
         processingSecond={processingSeconds}
         type={type}
         letter={letter}
@@ -146,7 +192,6 @@ const Letter: React.FC<ILetterProps> = ({
 
   return (
     <NormalLetter
-      {...otherProps}
       type={type}
       letter={letter}
       animate={{

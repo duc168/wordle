@@ -111,11 +111,11 @@ const HowToPlay: React.FC<{
           </p>
           <Example>
             <WordContainer>
-              <Letter letter="W" type="correct" isExample={true} {...tileProps} />
-              <Letter letter="E" type="typing" {...tileProps} />
-              <Letter letter="A" type="typing" {...tileProps} />
-              <Letter letter="R" type="typing" {...tileProps} />
-              <Letter letter="Y" type="typing" {...tileProps} />
+              <Letter letter="W" type="correct" isExample submitted {...tileProps} />
+              <Letter letter="E" type="typing" isExample {...tileProps} />
+              <Letter letter="A" type="typing" isExample {...tileProps} />
+              <Letter letter="R" type="typing" isExample {...tileProps} />
+              <Letter letter="Y" type="typing" isExample {...tileProps} />
             </WordContainer>
             <p>
               The letter <strong>W</strong> is in the word and in the correct spot.
@@ -124,11 +124,11 @@ const HowToPlay: React.FC<{
 
           <Example>
             <WordContainer>
-              <Letter letter="P" type="typing" {...tileProps} />
-              <Letter letter="I" type="wrong-spot" isExample={true} {...tileProps} />
-              <Letter letter="L" type="typing" {...tileProps} />
-              <Letter letter="L" type="typing" {...tileProps} />
-              <Letter letter="S" type="typing" {...tileProps} />
+              <Letter letter="P" type="typing" isExample {...tileProps} />
+              <Letter letter="I" type="wrong-spot" isExample submitted {...tileProps} />
+              <Letter letter="L" type="typing" isExample {...tileProps} />
+              <Letter letter="L" type="typing" isExample {...tileProps} />
+              <Letter letter="S" type="typing" isExample {...tileProps} />
             </WordContainer>
             <p>
               The letter <strong>I</strong> is in the word but in the wrong spot.
@@ -137,11 +137,11 @@ const HowToPlay: React.FC<{
 
           <Example>
             <WordContainer>
-              <Letter letter="V" type="typing" {...tileProps} />
-              <Letter letter="A" type="typing" {...tileProps} />
-              <Letter letter="G" type="typing" {...tileProps} />
-              <Letter letter="U" type="not-include" isExample={true} {...tileProps} />
-              <Letter letter="E" type="typing" {...tileProps} />
+              <Letter letter="V" type="typing" isExample {...tileProps} />
+              <Letter letter="A" type="typing" isExample {...tileProps} />
+              <Letter letter="G" type="typing" isExample {...tileProps} />
+              <Letter letter="U" type="not-include" isExample submitted {...tileProps} />
+              <Letter letter="E" type="typing" isExample {...tileProps} />
             </WordContainer>
             <p>
               The letter <strong>U</strong> is not in the word in any spot.
