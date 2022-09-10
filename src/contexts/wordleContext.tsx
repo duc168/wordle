@@ -378,9 +378,13 @@ const useWordle = () => {
       setCurrentAttempt(currentAttempt);
 
       if (currentAttempt === configs.tryTimes) {
-        retry(defaultDatabase);
+        if (helpers.isExpired(expired) === true) {
+          retry(defaultDatabase);
 
-        return;
+          return;
+        } else {
+          setSharePopupStatus(true);
+        }
       }
 
       initDatabase(cached);
@@ -404,8 +408,10 @@ const useWordle = () => {
 
     const tiles = db.map((table) => table.data.map((r) => typeToEmoji(r.type)));
 
+    const currentTryTime = currentAttemptRef.current + 1;
+
     const sharingQuote = helpers.getSharingText(
-      currentAttemptRef.current + 1,
+      currentTryTime > configs.tryTimes ? configs.tryTimes : currentTryTime,
       configs.tryTimes,
       tiles,
     );
