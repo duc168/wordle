@@ -334,7 +334,7 @@ const useWordle = () => {
 
     await fetchNewData();
 
-    console.log('Retry successfully.');
+    // console.log('Retry successfully.');
   };
 
   const initCounter = () => {

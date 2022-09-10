@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     port: 9999
   },
+  preview: {
+    port: 8080
+  },
   plugins: [react()],
   resolve: {
     alias: {

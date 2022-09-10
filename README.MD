@@ -53,7 +53,7 @@ Otherwise, it uses:
 
 Requires [Node.js](https://nodejs.org/) v14.18+ to run.
 
-Install the dependencies and devDependencies and start the server.
+Install the dependencies and devDependencies and start the development server. ([http://127.0.0.1:9999/](http://127.0.0.1:9999/))
 
 ```sh
 cd <project-path>
@@ -61,7 +61,7 @@ yarn
 yarn dev
 ```
 
-For production environments...
+For production environments preview ([http://127.0.0.1:8080/](http://127.0.0.1:8080/))
 
 ```sh
 yarn

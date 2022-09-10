@@ -49,7 +49,7 @@ class WordService {
 
       this.expiredTime = new Date().getTime() + helpers.convertMinutesToMilliseconds(10);
 
-      console.log('Cheating: ', this.word);
+      // console.log('Cheating: ', this.word);
 
       local.setSecret(this.wordIndex);
 
