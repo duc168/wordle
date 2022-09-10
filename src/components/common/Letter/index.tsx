@@ -32,12 +32,14 @@ const L = styled(motion.div)<{
   letterHeight: string;
 }>`
   border: 2px solid ${(props) => borderHandler(props.letter)};
-  width: ${(p) => p.letterWidth};
+  width: 100%;
+  /* width: ${(p) => p.letterWidth}; */
   line-height: 2rem;
   user-select: none;
-  height: ${(p) => p.letterHeight};
+  /* height: ${(p) => p.letterHeight}; */
   display: flex;
   justify-content: center;
+  box-sizing: border-box;
   align-items: center;
   font-size: 2rem;
   line-height: 2rem;

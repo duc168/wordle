@@ -17,6 +17,7 @@ const Title = styled.div<{ height: string }>`
   letter-spacing: 0.01em;
   border-bottom: 1px solid #d3d6da;
   height: ${(props) => props.height};
+  overflow: hidden;
 `;
 
 const Header: React.FC<any> = () => {

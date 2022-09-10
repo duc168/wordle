@@ -12,14 +12,23 @@ import SharePopup from './SharePopup';
 import Tiles from './Tiles';
 
 const Main = styled.div<{ headerHeight: string }>`
-  max-width: 500px;
+  /* max-width: 500px;
   margin: 0 auto;
   width: 100%;
   height: calc(100vh - ${(props) => props.headerHeight});
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: space-between; */
+
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 `;
 
 const Wordle: React.FC<any> = () => {

@@ -13,9 +13,12 @@ interface Props {
 }
 
 const Container = styled(motion.div)`
-  display: flex;
+  /* display: flex;
   column-gap: 5px;
-  padding-block: 2.5px;
+  padding-block: 2.5px; */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 5px;
 `;
 
 const Row: React.FC<Props> = ({ table, ...otherProps }) => {

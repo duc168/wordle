@@ -11,21 +11,23 @@ interface Props {
 }
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  justify-content: flex-end;
-  row-gap: 4px;
+  height: 200px;
+  margin: 0 8px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 const Row = styled.div`
   display: flex;
-  flex-direction: row;
-  margin: 0 auto 0px;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  column-gap: 4px;
+  margin: 0 auto 8px;
+  touch-action: manipulation;
+`;
+
+const Spacer = styled.div`
+  flex: 0.5;
 `;
 
 const Keyboard: React.FC<Props> = ({ keyboardModal, ...otherProps }) => {
@@ -37,9 +39,11 @@ const Keyboard: React.FC<Props> = ({ keyboardModal, ...otherProps }) => {
     <Container>
       {keyboardModal.map((row, idx) => (
         <Row key={new Date().getTime() + idx}>
+          {idx === 1 && <Spacer />}
           {row.map((letter, idx) => (
             <Key key={new Date().getTime() + idx} letter={letter} {...otherProps} />
           ))}
+          {idx === 1 && <Spacer />}
         </Row>
       ))}
     </Container>

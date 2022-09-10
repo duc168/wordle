@@ -37,11 +37,8 @@ const Button = styled.button<{ keyType: KeyType }>`
   font-weight: bold;
   border: 0;
   padding: 0;
-  /* margin: 0 6px 0 0; */
-  height: 40px;
-  /* width: 40px; */
-  padding-left: 10px;
-  padding-right: 10px;
+  margin: 0 6px 0 0;
+  height: 58px;
   border-radius: 4px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -56,14 +53,11 @@ const Button = styled.button<{ keyType: KeyType }>`
   align-items: center;
   text-transform: uppercase;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
-  font-size: 14px;
-  @media ${deviceMin.laptop} {
-    height: 58px;
-    /* width: 58px; */
-    padding-left: 20px;
-    padding-right: 20px;
-    font-size: 16px;
-  }
+`;
+
+const BigButton = styled(Button)`
+  flex: 1.5;
+  font-size: 12px;
 `;
 
 const getKeyType = (currentDatabase: IDatabase | undefined, letter: string): KeyType => {
@@ -135,9 +129,17 @@ const Key: React.FC<Props> = ({ letter, processingSeconds, ...otherProps }) => {
 
   if (letter === 'backspace') {
     return (
-      <Button keyType={keyType} {...otherProps} onClick={() => keyInteractHandler(letter)}>
+      <BigButton keyType={keyType} {...otherProps} onClick={() => keyInteractHandler(letter)}>
         <BackspaceSvg />
-      </Button>
+      </BigButton>
+    );
+  }
+
+  if (letter === 'enter') {
+    return (
+      <BigButton keyType={keyType} {...otherProps} onClick={() => keyInteractHandler(letter)}>
+        {letter}
+      </BigButton>
     );
   }
 
