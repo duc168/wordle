@@ -11,6 +11,7 @@ export interface ILetterProps extends ITileProps {
   type: LetterType;
   idx?: number;
   submitted?: boolean;
+  isExample?: boolean;
 }
 
 export interface ILetter {

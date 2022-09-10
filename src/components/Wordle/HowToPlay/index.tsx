@@ -111,7 +111,7 @@ const HowToPlay: React.FC<{
           </p>
           <Example>
             <WordContainer>
-              <Letter letter="W" type="correct" submitted={true} {...tileProps} />
+              <Letter letter="W" type="correct" isExample={true} {...tileProps} />
               <Letter letter="E" type="typing" {...tileProps} />
               <Letter letter="A" type="typing" {...tileProps} />
               <Letter letter="R" type="typing" {...tileProps} />
@@ -125,7 +125,7 @@ const HowToPlay: React.FC<{
           <Example>
             <WordContainer>
               <Letter letter="P" type="typing" {...tileProps} />
-              <Letter letter="I" type="wrong-spot" submitted={true} {...tileProps} />
+              <Letter letter="I" type="wrong-spot" isExample={true} {...tileProps} />
               <Letter letter="L" type="typing" {...tileProps} />
               <Letter letter="L" type="typing" {...tileProps} />
               <Letter letter="S" type="typing" {...tileProps} />
@@ -140,7 +140,7 @@ const HowToPlay: React.FC<{
               <Letter letter="V" type="typing" {...tileProps} />
               <Letter letter="A" type="typing" {...tileProps} />
               <Letter letter="G" type="typing" {...tileProps} />
-              <Letter letter="U" type="not-include" submitted={true} {...tileProps} />
+              <Letter letter="U" type="not-include" isExample={true} {...tileProps} />
               <Letter letter="E" type="typing" {...tileProps} />
             </WordContainer>
             <p>

@@ -8,7 +8,7 @@ import { ILetterProps, LetterType } from '@/interfaces';
 const colorHandler = (type: LetterType) => {
   if (type === 'typing') return '#000000';
 
-  return 'white';
+  return '#ffffff';
 };
 
 const backgroundColorHandler = (status: LetterType) => {
@@ -25,18 +25,14 @@ const borderHandler = (letter: string) => {
   return letter.length > 0 ? '#878a8c' : '#d3d6da';
 };
 
-const L = styled(motion.div)<{
+const NormalLetter = styled(motion.div)<{
   type: LetterType;
   letter: string;
-  letterWidth: string;
-  letterHeight: string;
 }>`
   border: 2px solid ${(props) => borderHandler(props.letter)};
   width: 100%;
-  width: ${(p) => p.letterWidth};
   line-height: 2rem;
   user-select: none;
-  height: ${(p) => p.letterHeight};
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -48,14 +44,31 @@ const L = styled(motion.div)<{
   scale: 1;
 `;
 
-const L2 = styled(motion.div)<{
+const SubmittedLetter = styled(motion.div)<{
+  type: LetterType;
+  letter: string;
+  processingSecond: number;
+}>`
+  border: 2px solid transparent;
+  line-height: 2rem;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+  user-select: none;
+  scale: 1;
+`;
+
+const ExampleLetter = styled(motion.div)<{
   type: LetterType;
   letter: string;
   letterWidth: string;
   letterHeight: string;
   processingSecond: number;
 }>`
-  /* border: 2px solid transparent; */
   width: ${(p) => p.letterWidth};
   line-height: 2rem;
   user-select: none;
@@ -68,9 +81,6 @@ const L2 = styled(motion.div)<{
   font-weight: bold;
   user-select: none;
   scale: 1;
-  /* opacity: 0; */
-  transform: rotateX(-90deg);
-  transition: ${(p) => p.processingSecond / 2}s;
 `;
 
 const Letter: React.FC<ILetterProps> = ({
@@ -78,23 +88,27 @@ const Letter: React.FC<ILetterProps> = ({
   type,
   idx,
   submitted,
+  isExample,
   processingSeconds,
   ...otherProps
 }) => {
-  if (submitted) {
+  if (isExample) {
     return (
-      <L2
+      <ExampleLetter
         {...otherProps}
         processingSecond={processingSeconds}
         type={type}
         letter={letter}
-        initial={false}
+        initial={{
+          borderColor: '#d3d6da',
+          rotateX: 0,
+        }}
         animate={{
-          opacity: [1, 0.9, 1],
-          rotateX: [0, 90, 0],
-          color: ['black', 'black', colorHandler(type)],
-          backgroundColor: ['transparent', 'transparent', backgroundColorHandler(type)],
-          // borderColor: ['none', 'none', borderHandler(letter)],
+          opacity: 1,
+          rotateX: [90, 0],
+          color: colorHandler(type),
+          backgroundColor: backgroundColorHandler(type),
+          borderColor: borderHandler(letter),
           scale: 1,
         }}
         transition={{
@@ -103,16 +117,38 @@ const Letter: React.FC<ILetterProps> = ({
         }}
       >
         {letter}
-      </L2>
+      </ExampleLetter>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <SubmittedLetter
+        // {...otherProps}
+        processingSecond={processingSeconds}
+        type={type}
+        letter={letter}
+        animate={{
+          rotateX: [0, 90, 0],
+          color: ['#000000', '#000000', colorHandler(type)],
+          backgroundColor: backgroundColorHandler(type),
+          scale: 1,
+        }}
+        transition={{
+          duration: processingSeconds / 2,
+          delay: ((idx ?? 0) + 1) * (processingSeconds / 4 / configs.characterPerWord),
+        }}
+      >
+        {letter}
+      </SubmittedLetter>
     );
   }
 
   return (
-    <L
+    <NormalLetter
       {...otherProps}
       type={type}
       letter={letter}
-      initial={false}
       animate={{
         color: colorHandler(type),
         backgroundColor: backgroundColorHandler(type),
@@ -120,15 +156,14 @@ const Letter: React.FC<ILetterProps> = ({
         scale: letter === '' ? 1 : [1.25, 1],
       }}
       transition={{
-        duration: type === 'typing' ? 0.1 : processingSeconds,
+        duration: type === 'typing' ? 0.1 : processingSeconds / 2,
       }}
       exit={{
-        opacity: 0,
         rotateX: 90,
       }}
     >
       {letter}
-    </L>
+    </NormalLetter>
   );
 };
 
