@@ -33,10 +33,10 @@ const L = styled(motion.div)<{
 }>`
   border: 2px solid ${(props) => borderHandler(props.letter)};
   width: 100%;
-  /* width: ${(p) => p.letterWidth}; */
+  width: ${(p) => p.letterWidth};
   line-height: 2rem;
   user-select: none;
-  /* height: ${(p) => p.letterHeight}; */
+  height: ${(p) => p.letterHeight};
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -55,7 +55,7 @@ const L2 = styled(motion.div)<{
   letterHeight: string;
   processingSecond: number;
 }>`
-  border: 2px solid transparent;
+  /* border: 2px solid transparent; */
   width: ${(p) => p.letterWidth};
   line-height: 2rem;
   user-select: none;

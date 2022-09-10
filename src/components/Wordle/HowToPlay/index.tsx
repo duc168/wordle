@@ -50,6 +50,7 @@ const WordContainer = styled.div`
   margin-bottom: 4px;
   display: flex;
   column-gap: 4px;
+  align-items: center;
 `;
 
 const HowToPlay: React.FC<{
@@ -70,9 +71,11 @@ const HowToPlay: React.FC<{
     <Popup open={howToPlayPopupStatus} onClose={closeHandler} position="top center">
       <Container
         initial={{
+          opacity: 0,
           y: 200,
         }}
         animate={{
+          opacity: 1,
           y: -50,
         }}
         exit={{

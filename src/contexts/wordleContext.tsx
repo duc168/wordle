@@ -12,7 +12,6 @@ import word from '@/services/word';
 
 const INITIAL_STATE = {
   counter: 0,
-  howToPlayPopupStatus: false,
   sharePopupStatus: false,
   completed: false,
   processing: false,
@@ -20,12 +19,20 @@ const INITIAL_STATE = {
   currentPosition: 0,
 };
 
+const getHowToPlayStatus = () => {
+  const cached = local.getHowToPlayStatus();
+
+  if (!cached) {
+    return true;
+  } else {
+    return cached;
+  }
+};
+
 const useWordle = () => {
   const [counter, setCounter] = useState(INITIAL_STATE.counter);
 
-  const [howToPlayPopupStatus, setHowToPlayPopupStatus] = useState<boolean>(
-    INITIAL_STATE.howToPlayPopupStatus,
-  );
+  const [howToPlayPopupStatus, setHowToPlayPopupStatus] = useState<boolean>(getHowToPlayStatus());
 
   const [sharePopupStatus, setSharePopupStatus] = useState<boolean>(INITIAL_STATE.sharePopupStatus);
 
@@ -67,8 +74,16 @@ const useWordle = () => {
 
   const currentTable = !database ? undefined : database[currentAttempt];
 
+  const updateHowToPlayPopupStatus = (status: boolean | undefined) => {
+    if (status === undefined) {
+      setHowToPlayPopupStatus(true);
+    } else {
+      setHowToPlayPopupStatus(status);
+    }
+  };
+
   const resetContextState = () => {
-    setHowToPlayPopupStatus(INITIAL_STATE.howToPlayPopupStatus);
+    updateHowToPlayPopupStatus(getHowToPlayStatus());
 
     setSharePopupStatus(INITIAL_STATE.sharePopupStatus);
 
@@ -87,20 +102,22 @@ const useWordle = () => {
     setKeyboardDatabase(inputDatabase);
   };
 
-  const updateHowToPlayPopupStatus = (status: boolean | undefined) => {
-    if (status === undefined) {
-      setHowToPlayPopupStatus(true);
-    } else {
-      setHowToPlayPopupStatus(status);
-    }
-  };
-
   const updateSharePopupStatus = (status: boolean | undefined) => {
     if (status === undefined) {
       setSharePopupStatus(false);
     } else {
       setSharePopupStatus(status);
     }
+  };
+
+  const syncKeyboardDatabase = () => {
+    setKeyboardDatabase(databaseRef.current);
+  };
+
+  const syncPersistentData = () => {
+    local.setHowToPlayStatus(howToPlayPopupStatusRef.current);
+
+    local.saveDatabase(databaseRef.current);
   };
 
   const check = (customCheck: () => boolean) => {
@@ -205,16 +222,6 @@ const useWordle = () => {
     setDatabase(clonedDatabase);
   };
 
-  const syncKeyboardDatabase = () => {
-    setKeyboardDatabase(databaseRef.current);
-  };
-
-  const syncPersistentData = () => {
-    local.setHowToPlayStatus(howToPlayPopupStatusRef.current);
-
-    local.saveDatabase(databaseRef.current);
-  };
-
   const compare = async (processingSeconds: number) => {
     const checked = check(() => true);
 
@@ -288,12 +295,6 @@ const useWordle = () => {
     setCurrentPosition(0);
   };
 
-  const counterCleanupHandler = () => {
-    clearInterval(counterIntervalIdRef.current);
-
-    setCounter(0);
-  };
-
   const fetchData = async () => {
     setProcessing(true);
 
@@ -308,6 +309,12 @@ const useWordle = () => {
     await word.getNewWord();
 
     setProcessing(false);
+  };
+
+  const counterCleanupHandler = () => {
+    clearInterval(counterIntervalIdRef.current);
+
+    setCounter(0);
   };
 
   const retry = async (defaultDatabase: IDatabase) => {
@@ -328,6 +335,32 @@ const useWordle = () => {
     await fetchNewData();
 
     console.log('Retry successfully.');
+  };
+
+  const initCounter = () => {
+    const expired = local.getExpiredDate();
+
+    if (!expired) return;
+
+    const remains = expired - new Date().getTime();
+
+    const remainSeconds = Math.floor(remains / 1000);
+
+    setCounter(remainSeconds);
+
+    counterIntervalIdRef.current = setInterval(() => {
+      if (counterRef.current <= 0) {
+        counterCleanupHandler();
+
+        const lastDefaultDb = lastDefaultDatabaseRef.current;
+
+        if (lastDefaultDb) retry(lastDefaultDb);
+
+        return;
+      }
+
+      setCounter((c) => c - 1);
+    }, 1000);
   };
 
   const init = (defaultDatabase: IDatabase) => {
@@ -386,29 +419,7 @@ const useWordle = () => {
 
   useEffect(() => {
     if (completed === true) {
-      const expired = local.getExpiredDate();
-
-      if (!expired) return;
-
-      const remains = expired - new Date().getTime();
-
-      const remainSeconds = Math.floor(remains / 1000);
-
-      setCounter(remainSeconds);
-
-      counterIntervalIdRef.current = setInterval(() => {
-        if (counterRef.current <= 0) {
-          counterCleanupHandler();
-
-          const lastDefaultDb = lastDefaultDatabaseRef.current;
-
-          if (lastDefaultDb) retry(lastDefaultDb);
-
-          return;
-        }
-
-        setCounter((c) => c - 1);
-      }, 1000);
+      initCounter();
 
       return () => {
         counterCleanupHandler();

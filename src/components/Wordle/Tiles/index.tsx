@@ -23,7 +23,8 @@ const Container = styled.div`
 
 const Grid = styled.div`
   width: 350px;
-  height: 420px;
+  /* height: 420px; */
+  min-height: 420px;
   display: grid;
   grid-template-rows: repeat(6, 1fr);
   grid-gap: 5px;
