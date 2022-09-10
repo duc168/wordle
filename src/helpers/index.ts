@@ -121,6 +121,7 @@ export default {
   convertMinutesToMilliseconds,
   isExpired,
 
+  getTwoDigits,
   getSharingText,
   delay,
   copyToClipboard,

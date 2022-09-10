@@ -2,10 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useWordleContext } from '@/contexts/wordleContext';
+import helpers from '@/helpers';
 
 const Container = styled.div`
   display: flex;
   text-align: center;
+  justify-content: center;
 `;
 
 const Counter: React.FC<any> = () => {
@@ -17,7 +19,12 @@ const Counter: React.FC<any> = () => {
 
   return (
     <Container>
-      <p>Next word: {counter}s</p>
+      <p>
+        Next word:{' '}
+        {`${helpers.getTwoDigits(Math.floor(counter / 60))}:${helpers.getTwoDigits(
+          Math.floor(counter % 60),
+        )}`}
+      </p>
     </Container>
   );
 };

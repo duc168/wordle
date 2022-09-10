@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
-import configs from '@/configs';
 import keyCodes from '@/constants/keycodes';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { IDatabase, ITable } from '@/interfaces';
-import { deviceMin } from '@/services/css';
 
 import BackspaceSvg from './BackspaceSvg';
 
@@ -103,7 +101,7 @@ const Key: React.FC<Props> = ({ letter, processingSeconds, ...otherProps }) => {
     }
 
     if (inputLetter === 'enter') {
-      compare(processingSeconds, configs.tryTimes);
+      compare(processingSeconds);
 
       return;
     }

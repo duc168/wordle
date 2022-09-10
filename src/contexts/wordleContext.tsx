@@ -67,7 +67,7 @@ const useWordle = () => {
 
   const currentTable = !database ? undefined : database[currentAttempt];
 
-  const reset = () => {
+  const resetContextState = () => {
     setHowToPlayPopupStatus(INITIAL_STATE.howToPlayPopupStatus);
 
     setSharePopupStatus(INITIAL_STATE.sharePopupStatus);
@@ -128,6 +128,14 @@ const useWordle = () => {
       return false;
     }
 
+    const db = databaseRef.current;
+
+    if (!db) {
+      console.error(messages.NO_DATABASE);
+
+      return false;
+    }
+
     return customCheck();
   };
 
@@ -166,9 +174,7 @@ const useWordle = () => {
 
     setCurrentPosition(currentPositionRef.current + 1);
 
-    const db = databaseRef.current;
-
-    if (!db) return;
+    const db = databaseRef.current!;
 
     const clonedDatabase = helpers.clone(db);
 
@@ -188,9 +194,7 @@ const useWordle = () => {
 
     setCurrentPosition(position);
 
-    const db = databaseRef.current;
-
-    if (!db) return;
+    const db = databaseRef.current!;
 
     const clonedDatabase = helpers.clone(db);
 
@@ -201,7 +205,7 @@ const useWordle = () => {
     setDatabase(clonedDatabase);
   };
 
-  const syncDatabase = () => {
+  const syncKeyboardDatabase = () => {
     setKeyboardDatabase(databaseRef.current);
   };
 
@@ -211,16 +215,14 @@ const useWordle = () => {
     local.saveDatabase(databaseRef.current);
   };
 
-  const compare = (processingSeconds: number, tryTimes: number) => {
+  const compare = async (processingSeconds: number) => {
     const checked = check(() => true);
 
     if (!checked) return;
 
     setProcessing(true);
 
-    const db = databaseRef.current;
-
-    if (!db) return;
+    const db = databaseRef.current!;
 
     const attempt = currentAttemptRef.current;
 
@@ -228,72 +230,76 @@ const useWordle = () => {
 
     const result = word.compareWord(currentWord);
 
-    if (result.length > 0) {
-      const clonedDatabase = helpers.clone(db);
-
-      const table = clonedDatabase[attempt];
-
-      const newTable = table.data.map((item, idx) => ({
-        ...item,
-        type: result[idx],
-      }));
-
-      clonedDatabase[attempt].data = newTable;
-
-      clonedDatabase[attempt].submitted = true;
-
-      setDatabase(clonedDatabase);
-
-      setTimeout(() => {
-        syncPersistentData();
-
-        setProcessing(false);
-
-        syncDatabase();
-
-        if (result.filter((item) => item === 'correct').length === result.length) {
-          console.info('Congratulation!');
-
-          setCompleted(true);
-
-          local.setCompleted(true);
-
-          setSharePopupStatus(true);
-
-          return;
-        }
-
-        const nextAttempt = attempt + 1;
-
-        if (nextAttempt >= configs.tryTimes) {
-          setCompleted(true);
-
-          local.setCompleted(true);
-
-          setSharePopupStatus(true);
-        }
-
-        setCurrentAttempt(nextAttempt);
-
-        setCurrentPosition(0);
-      }, processingSeconds * 1000);
-    } else {
+    if (result.length <= 0) {
       setProcessing(false);
+
+      return;
     }
+
+    const clonedDatabase = helpers.clone(db);
+
+    const table = clonedDatabase[attempt];
+
+    const newTable = table.data.map((item, idx) => ({
+      ...item,
+      type: result[idx],
+    }));
+
+    clonedDatabase[attempt].data = newTable;
+
+    clonedDatabase[attempt].submitted = true;
+
+    setDatabase(clonedDatabase);
+
+    await helpers.delay(processingSeconds * 1000);
+
+    syncPersistentData();
+
+    syncKeyboardDatabase();
+
+    setProcessing(false);
+
+    if (result.filter((item) => item === 'correct').length === result.length) {
+      console.info('Congratulation! You found the word');
+
+      setCompleted(true);
+
+      local.setCompleted(true);
+
+      setSharePopupStatus(true);
+
+      return;
+    }
+
+    const nextAttempt = attempt + 1;
+
+    if (nextAttempt >= configs.tryTimes) {
+      console.info("Let's try one more time");
+
+      setCompleted(true);
+
+      local.setCompleted(true);
+
+      setSharePopupStatus(true);
+    }
+
+    setCurrentAttempt(nextAttempt);
+
+    setCurrentPosition(0);
   };
 
-  const clearCounterLoop = () => {
+  const counterCleanupHandler = () => {
     clearInterval(counterIntervalIdRef.current);
 
     setCounter(0);
   };
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setProcessing(true);
 
-    word.getWord().then(() => {
-      setProcessing(false);
-    });
+    await word.getWord();
+
+    setProcessing(false);
   };
 
   const fetchNewData = async () => {
@@ -304,26 +310,24 @@ const useWordle = () => {
     setProcessing(false);
   };
 
-  const retry = (defaultDatabase: IDatabase) => {
+  const retry = async (defaultDatabase: IDatabase) => {
     lastDefaultDatabaseRef.current = defaultDatabase;
 
-    clearCounterLoop();
+    counterCleanupHandler();
 
     local.clear();
 
-    helpers
-      .delay(100)
-      .then(() => {
-        reset();
+    await helpers.delay(100);
 
-        return helpers.delay(100);
-      })
-      .then(() => {
-        initDatabase(defaultDatabase);
+    resetContextState();
 
-        return fetchNewData();
-      })
-      .then(() => console.log('Retry successfully.'));
+    await helpers.delay(100);
+
+    initDatabase(defaultDatabase);
+
+    await fetchNewData();
+
+    console.log('Retry successfully.');
   };
 
   const init = (defaultDatabase: IDatabase) => {
@@ -356,7 +360,7 @@ const useWordle = () => {
     }
   };
 
-  const share = () => {
+  const share = async () => {
     const db = databaseRef.current;
 
     if (!db) {
@@ -375,16 +379,12 @@ const useWordle = () => {
 
     console.log(sharingQuote);
 
-    helpers.copyToClipboard(sharingQuote);
+    await helpers.copyToClipboard(sharingQuote);
+
+    toast.info(messages.COPIED_TO_CLIPBOARD);
   };
 
   useEffect(() => {
-    counterRef.current = counter;
-  }, [counter]);
-
-  useEffect(() => {
-    completedRef.current = completed;
-
     if (completed === true) {
       const expired = local.getExpiredDate();
 
@@ -398,7 +398,7 @@ const useWordle = () => {
 
       counterIntervalIdRef.current = setInterval(() => {
         if (counterRef.current <= 0) {
-          clearCounterLoop();
+          counterCleanupHandler();
 
           const lastDefaultDb = lastDefaultDatabaseRef.current;
 
@@ -411,9 +411,17 @@ const useWordle = () => {
       }, 1000);
 
       return () => {
-        clearCounterLoop();
+        counterCleanupHandler();
       };
     }
+  }, [completed]);
+
+  useEffect(() => {
+    counterRef.current = counter;
+  }, [counter]);
+
+  useEffect(() => {
+    completedRef.current = completed;
   }, [completed]);
 
   useEffect(() => {
