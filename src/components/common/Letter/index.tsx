@@ -4,25 +4,26 @@ import styled from 'styled-components';
 
 import configs from '@/configs';
 import { ILetterProps, LetterType } from '@/interfaces';
+import colors from '@/services/colors';
 
 const colorHandler = (type: LetterType) => {
-  if (type === 'typing') return '#000000';
+  if (type === 'typing') return colors.Letter.color1;
 
-  return '#ffffff';
+  return colors.Letter.color2;
 };
 
 const backgroundColorHandler = (status: LetterType) => {
-  if (status === 'correct') return '#6aaa64';
+  if (status === 'correct') return colors.Letter.backgroundColor1;
 
-  if (status === 'wrong-spot') return '#c9b458';
+  if (status === 'wrong-spot') return colors.Letter.backgroundColor2;
 
-  if (status === 'not-include') return '#787c7e';
+  if (status === 'not-include') return colors.Letter.backgroundColor3;
 
-  return 'transparent';
+  return colors.Letter.backgroundColor4;
 };
 
 const borderHandler = (letter: string) => {
-  return letter.length > 0 ? '#878a8c' : '#d3d6da';
+  return letter.length > 0 ? colors.Letter.borderColor1 : colors.Letter.borderColor2;
 };
 
 const NormalLetter = styled(motion.div)<{
@@ -123,7 +124,7 @@ const Letter: React.FC<ILetterProps> = ({
         type={type}
         letter={letter}
         initial={{
-          borderColor: '#d3d6da',
+          borderColor: colors.Letter.borderColor2,
           rotateX: 0,
         }}
         animate={{
@@ -176,7 +177,7 @@ const Letter: React.FC<ILetterProps> = ({
         letter={letter}
         animate={{
           rotateX: [0, 90, 0],
-          color: ['#000000', '#000000', colorHandler(type)],
+          color: [colors.Letter.color1, colors.Letter.color1, colorHandler(type)],
           backgroundColor: backgroundColorHandler(type),
           scale: 1,
         }}

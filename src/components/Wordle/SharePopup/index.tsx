@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { useWordleContext } from '@/contexts/wordleContext';
 import { IDatabase } from '@/interfaces';
+import colors from '@/services/colors';
 import { deviceMax } from '@/services/css';
 
 const Container = styled.div`
@@ -11,15 +12,13 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background-color: #ffffff;
+  background-color: ${colors.SharePopup.Container.backgroundColor};
   border-radius: 8px;
-  border: 1px solid #f6f7f8;
-  color: #000000;
-  box-shadow: 0 4px 23px 0 rgb(0 0 0 / 20%);
+  border: 1px solid ${colors.SharePopup.Container.borderColor};
+  color: ${colors.SharePopup.Container.color};
+  box-shadow: 0 4px 23px 0 ${colors.SharePopup.Container.boxShadowColor};
   position: relative;
   column-gap: 1rem;
-  /* height: 50vh; */
-  /* width: 50vw; */
   max-height: 100vh;
   max-width: 100vw;
   @media ${deviceMax.tablet} {
@@ -44,18 +43,18 @@ const CommonButton = styled.button`
 `;
 
 const ShareButton = styled(CommonButton)`
-  color: #ffffff;
-  background-color: #6aaa64;
+  color: ${colors.SharePopup.ShareButton.color};
+  background-color: ${colors.SharePopup.ShareButton.backgroundColor};
 `;
 
 const RetryButton = styled(CommonButton)`
-  color: #ffffff;
-  background-color: #c9b458;
+  color: ${colors.SharePopup.RetryButton.color};
+  background-color: ${colors.SharePopup.RetryButton.backgroundColor};
 `;
 
 const CloseButton = styled(CommonButton)`
-  color: #ffffff;
-  background-color: #787c7e;
+  color: ${colors.SharePopup.CloseButton.color};
+  background-color: ${colors.SharePopup.CloseButton.backgroundColor};
 `;
 
 const SharePopup: React.FC<{ defaultDatabase: IDatabase }> = ({ defaultDatabase }) => {
@@ -80,7 +79,7 @@ const SharePopup: React.FC<{ defaultDatabase: IDatabase }> = ({ defaultDatabase 
       position="top center"
       {...{
         overlayStyle: {
-          backgroundColor: 'rgba(0,0,0,0.5)',
+          backgroundColor: colors.SharePopup.Overlay.backgroundColor,
         },
       }}
     >

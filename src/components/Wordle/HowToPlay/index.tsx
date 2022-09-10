@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import Popup from 'reactjs-popup';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import Letter from '@/components/common/Letter';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { ITileProps } from '@/interfaces';
+import colors from '@/services/colors';
 import { deviceMin } from '@/services/css';
 
 import CloseSvg from './CloseSvg';
@@ -13,11 +14,11 @@ import CloseSvg from './CloseSvg';
 const Container = styled(motion.div)`
   display: block;
   padding: 0.5rem 1rem;
-  background-color: #ffffff;
+  background-color: ${colors.HowToPlay.Container.backgroundColor};
   border-radius: 8px;
-  border: 1px solid #f6f7f8;
-  color: #000000;
-  box-shadow: 0 4px 23px 0 rgb(0 0 0 / 20%);
+  border: 1px solid ${colors.HowToPlay.Container.borderColor};
+  color: ${colors.HowToPlay.Container.color};
+  box-shadow: 0 4px 23px 0 ${colors.HowToPlay.Container.boxShadowColor};
   position: relative;
   font-size: 12px;
   @media ${deviceMin.laptopL} {
@@ -29,7 +30,7 @@ const CloseButton = styled(motion.a)`
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
-  background-color: transparent;
+  background-color: ${colors.HowToPlay.CloseButton.backgroundColor};
   border: none;
   cursor: pointer;
   @media ${deviceMin.laptopL} {
@@ -45,8 +46,8 @@ const Title = styled.h1`
 `;
 
 const Examples = styled.div`
-  border-bottom: 1px solid #d3d6da;
-  border-top: 1px solid #d3d6da;
+  border-bottom: 1px solid ${colors.HowToPlay.Example.borderColor};
+  border-top: 1px solid ${colors.HowToPlay.Example.borderColor};
 `;
 
 const Example = styled.div`

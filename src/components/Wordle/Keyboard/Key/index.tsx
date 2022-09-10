@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import keyCodes from '@/constants/keycodes';
 import { useWordleContext } from '@/contexts/wordleContext';
 import { IDatabase, ITable } from '@/interfaces';
+import colors from '@/services/colors';
 
 import BackspaceSvg from './BackspaceSvg';
 
@@ -50,7 +51,7 @@ const Button = styled.button<{ keyType: KeyType }>`
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: ${colors.Keyboard.highlightColor};
 `;
 
 const BigButton = styled(Button)`
