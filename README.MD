@@ -1,9 +1,9 @@
 # A Wordle clone app
 
-Original game: [https://www.nytimes.com/games/wordle/index.html][original-game-url]
+Original game: [https://www.nytimes.com/games/wordle/index.html](original-game-url)
 
 ## Demo
-Url: [https://duc168.github.io/wordle/][https://duc168.github.io/wordle/]
+Url: [https://duc168.github.io/wordle/](https://duc168.github.io/wordle/)
 ## Features
 
 - Basic features are the same as Wordle.
