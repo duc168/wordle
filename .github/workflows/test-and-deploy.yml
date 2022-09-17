@@ -1,102 +1,19 @@
-name: Test & Deploy
+name: Test and deploy the Wordle Clone App
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
-  testing:
-    runs-on: ${{ matrix.os }}
-
+  testingJob:
     strategy:
       matrix:
         os: [ubuntu-latest]
         node: [14.18.0]
-
-    steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
-
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: ${{ matrix.node }}
-          check-latest: true
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v2.1.4
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn
-      
-      - name: Test
-        run: yarn test
-
-      - name: Build production 📦
-        run: yarn build
-
-      - name: copy ssh_config to dist
-        run: |
-          set -x    
-          cp github/deploy/ssh_config dist/
-      - name: Upload dist
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist
-      
-  deployment:
-    needs: testing
-    runs-on: ${{ matrix.os }}
-    # if: "contains(github.event.head_commit.message, 'deploy')"
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [14.17.2]
-
-    steps:
-      - name: Download dist
-        uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: dist
-      - name: set up
-        run: |
-          set -x    
-          mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
-          echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-          echo "$MY_DEPLOY_FILE" >> my_deploy_file
-          cat my_deploy_file     
-          ls
-          chmod 600 my_deploy_file
-          mv my_deploy_file ~/.ssh/id_rsa
-          mv dist/ssh_config ~/.ssh/config
-        shell: bash
-        env:
-          MY_DEPLOY_FILE : ${{secrets.PRIVATE_DEPLOY_KEY}}
-      - name: deploy
-        run: |
-          set -x    
-          cd dist
-          git init
-          git remote add deploy "git@github.com:duc168/wordle.git"
-          git config user.name "Github Workflow Action"
-          git config user.email "victor.tran.august@gmail.com"
-          git checkout -b production
-          git add .
-          git commit -m "Deploy"          
-          git push --force deploy production
+    uses: duc168/workflows/.github/workflows/ssh-deploy.yml@master
+    with:
+      os: ubuntu-latest
+      node: 14.18.0
+      ssh_path: git@github.com:duc168/wordle.git
+      user_email: victor.tran.august@gmail.com
+    secrets:
+      my_deploy_key: ${{ secrets.PRIVATE_DEPLOY_KEY }}
