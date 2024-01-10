@@ -1,6 +1,6 @@
 # A Wordle clone app
 
-Original game: [https://www.nytimes.com/games/wordle/index.html](original-game-url)
+Original game: [https://www.nytimes.com/games/wordle/index.html](https://www.nytimes.com/games/wordle/index.html)
 
 ## Demo
 Url: [https://duc168.github.io/wordle/](https://duc168.github.io/wordle/)
